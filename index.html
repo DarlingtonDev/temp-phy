@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics CBT - Exam Preparation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--primary:#1a56db;--primary-dark:#1e40af;--success:#16a34a;--danger:#dc2626;--warning:#f59e0b;--bg:#f1f5f9;--card:#fff;--text:#1e293b;--text-light:#64748b;--border:#e2e8f0;--accent:#6366f1}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.container{max-width:800px;margin:0 auto;padding:16px}
+.header{text-align:center;padding:20px 0;border-bottom:2px solid var(--primary)}
+.header h1{font-size:1.5rem;color:var(--primary);font-weight:700}
+.header p{color:var(--text-light);font-size:.9rem;margin-top:4px}
+.card{background:var(--card);border-radius:12px;padding:24px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s;gap:8px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-warning{background:var(--warning);color:#fff}
+.btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-sm{padding:8px 16px;font-size:.875rem}
+.btn-block{width:100%;display:flex}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.progress-bar{background:var(--border);border-radius:99px;height:8px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;background:var(--primary);border-radius:99px;transition:width .3s}
+.question-counter{display:flex;justify-content:space-between;align-items:center;font-size:.9rem;color:var(--text-light);margin-bottom:8px}
+.question-text{font-size:1.1rem;font-weight:600;margin-bottom:20px;line-height:1.7}
+.options{display:flex;flex-direction:column;gap:10px}
+.option{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;font-size:.95rem}
+.option:hover{border-color:var(--primary);background:#f0f4ff}
+.option.selected{border-color:var(--primary);background:#e0e7ff}
+.option.correct{border-color:var(--success);background:#dcfce7}
+.option.wrong{border-color:var(--danger);background:#fee2e2}
+.option-label{min-width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--border);font-weight:700;font-size:.85rem;flex-shrink:0}
+.option.selected .option-label{background:var(--primary);color:#fff}
+.option.correct .option-label{background:var(--success);color:#fff}
+.option.wrong .option-label{background:var(--danger);color:#fff}
+.nav-buttons{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+.nav-buttons .btn{flex:1;min-width:120px}
+.timer{font-size:1.1rem;font-weight:700;color:var(--primary)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:16px 0}
+.stat-card{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-radius:12px;padding:16px;text-align:center}
+.stat-card .stat-value{font-size:1.8rem;font-weight:800}
+.stat-card .stat-label{font-size:.8rem;opacity:.9;margin-top:4px}
+.topic-bar{margin:8px 0}
+.topic-row{display:flex;align-items:center;justify-content:space-between;margin:6px 0;font-size:.9rem}
+.topic-progress{flex:1;margin:0 12px;background:var(--border);border-radius:99px;height:10px;overflow:hidden}
+.topic-fill{height:100%;border-radius:99px;transition:width .3s}
+.topic-fill.strong{background:var(--success)}
+.topic-fill.medium{background:var(--warning)}
+.topic-fill.weak{background:var(--danger)}
+.explanation-box{margin-top:12px;padding:14px;background:#f0fdf4;border-left:4px solid var(--success);border-radius:0 8px 8px 0;font-size:.9rem}
+.explanation-box.has-formula{background:#fefce8;border-left-color:var(--warning)}
+.wrong-explanation{margin-top:8px;padding:10px;background:#fff1f2;border-left:4px solid var(--danger);border-radius:0 8px 8px 0;font-size:.85rem}
+.review-question{border-bottom:1px solid var(--border);padding:20px 0}
+.review-question:last-child{border-bottom:none}
+.badge{display:inline-block;padding:4px 10px;border-radius:99px;font-size:.75rem;font-weight:700}
+.badge-success{background:#dcfce7;color:#166534}
+.badge-danger{background:#fee2e2;color:#991b1b}
+.badge-warning{background:#fef3c7;color:#92400e}
+.score-display{text-align:center;padding:30px}
+.score-big{font-size:3.5rem;font-weight:800;color:var(--primary)}
+.score-percent{font-size:1.5rem;color:var(--text-light);margin:4px 0}
+.grade{font-size:1.2rem;font-weight:700;padding:6px 20px;border-radius:99px;display:inline-block;margin-top:8px}
+.grade-excellent{background:#dcfce7;color:#166534}
+.grade-good{background:#dbeafe;color:#1e40af}
+.grade-average{background:#fef3c7;color:#92400e}
+.grade-poor{background:#fee2e2;color:#991b1b}
+.history-item{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid var(--border);font-size:.9rem}
+.hidden{display:none!important}
+.flag-btn{position:absolute;top:8px;right:8px;background:none;border:none;font-size:1.2rem;cursor:pointer;opacity:.5}
+.flag-btn.flagged{opacity:1;color:var(--warning)}
+.q-wrapper{position:relative}
+.confirm-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:999;padding:16px}
+.confirm-box{background:#fff;border-radius:16px;padding:30px;max-width:400px;width:100%;text-align:center}
+.confirm-box h3{margin-bottom:12px}
+.confirm-box p{color:var(--text-light);margin-bottom:20px;font-size:.95rem}
+.confirm-actions{display:flex;gap:12px;justify-content:center}
+.dot-indicators{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0;justify-content:center}
+.dot{width:28px;height:28px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;cursor:pointer;transition:all .2s}
+.dot.answered{background:var(--primary);color:#fff;border-color:var(--primary)}
+.dot.current{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.dot.flagged-dot{border-color:var(--warning)}
+@media(max-width:600px){.container{padding:10px}.card{padding:16px;margin:10px 0}.question-text{font-size:1rem}.btn{padding:10px 18px;font-size:.9rem}.score-big{font-size:2.5rem}.stats-grid{grid-template-columns:1fr 1fr}.nav-buttons{gap:8px}.nav-buttons .btn{min-width:0;padding:10px 12px;font-size:.85rem}}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+<!-- HOME SCREEN -->
+<div id="screen-home">
+<div class="header">
+<h1>⚡ Physics CBT</h1>
+<p>Electric Fields, Circuits & More</p>
+</div>
+<div class="card">
+<h2 style="margin-bottom:8px">Welcome!</h2>
+<p style="color:var(--text-light);margin-bottom:16px">Prepare for your exam with randomized CBT practice. Each exam draws 30 questions from a bank of 250+ covering all your topics.</p>
+<div style="display:flex;flex-direction:column;gap:10px">
+<button class="btn btn-primary btn-block" onclick="startExam('full')">🎯 Start Exam</button>
+<button class="btn btn-accent btn-block" onclick="startExam('weak')" id="btn-weak">🔬 Practice Weak Areas</button>
+<button class="btn btn-outline btn-block" onclick="showScreen('screen-history')">📊 View History</button>
+</div>
+</div>
+<div class="card" id="topic-overview">
+<h3 style="margin-bottom:12px">Topic Performance</h3>
+<div id="topic-bars"></div>
+</div>
+<div class="card">
+<h3>Covered Topics</h3>
+<p style="color:var(--text-light);font-size:.9rem;margin-top:8px">Electric Field • Electric Field Lines • Electric Potential • Conductors & Current • Resistance • Resistors • Ohm's Law • Series & Parallel Connections • Electric Power • Joule's Law • EMF</p>
+</div>
+</div>
+
+<!-- EXAM SCREEN -->
+<div id="screen-exam" class="hidden">
+<div class="card" style="padding:12px 16px">
+<div class="question-counter">
+<span id="q-counter">Question 1 of 30</span>
+<span class="timer" id="timer">00:00</span>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="exam-progress" style="width:3.3%"></div></div>
+<div class="dot-indicators" id="dot-nav"></div>
+</div>
+<div class="card q-wrapper">
+<button class="flag-btn" id="flag-btn" onclick="toggleFlag()" title="Flag this question">🚩</button>
+<div class="question-text" id="q-text"></div>
+<div class="options" id="q-options"></div>
+</div>
+<div class="nav-buttons">
+<button class="btn btn-outline" id="btn-prev" onclick="navQuestion(-1)">← Prev</button>
+<button class="btn btn-primary" id="btn-next" onclick="navQuestion(1)">Next →</button>
+<button class="btn btn-danger" id="btn-submit" onclick="confirmSubmit()">Submit</button>
+</div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="screen-result" class="hidden">
+<div class="header">
+<h1>📋 Exam Results</h1>
+</div>
+<div class="card score-display">
+<div class="score-big" id="res-score">28/30</div>
+<div class="score-percent" id="res-percent">93%</div>
+<div id="res-grade" class="grade grade-excellent">Excellent</div>
+</div>
+<div class="card">
+<h3 style="margin-bottom:12px">Topic Breakdown</h3>
+<div id="res-topics"></div>
+</div>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-value" id="res-correct">28</div><div class="stat-label">Correct</div></div>
+<div class="stat-card" style="background:linear-gradient(135deg,#dc2626,#f87171)"><div class="stat-value" id="res-wrong">2</div><div class="stat-label">Wrong</div></div>
+<div class="stat-card" style="background:linear-gradient(135deg,#f59e0b,#fbbf24)"><div class="stat-value" id="res-unanswered">0</div><div class="stat-label">Unanswered</div></div>
+<div class="stat-card" style="background:linear-gradient(135deg,#6366f1,#818cf8)"><div class="stat-value" id="res-time">--:--</div><div class="stat-label">Time</div></div>
+</div>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+<button class="btn btn-primary btn-block" onclick="showScreen('screen-review')">📖 Review Answers</button>
+<button class="btn btn-accent btn-block" onclick="startExam('weak')" id="btn-weak2">🔬 Practice Weak Areas</button>
+<button class="btn btn-outline btn-block" onclick="showScreen('screen-home');refreshHome()">🏠 Home</button>
+</div>
+</div>
+
+<!-- REVIEW SCREEN -->
+<div id="screen-review" class="hidden">
+<div class="header">
+<h1>📖 Answer Review</h1>
+<p id="review-summary"></p>
+</div>
+<div id="review-list"></div>
+<div style="margin:20px 0;text-align:center">
+<button class="btn btn-outline" onclick="showScreen('screen-result')">← Back to Results</button>
+<button class="btn btn-primary" onclick="showScreen('screen-home');refreshHome()">🏠 Home</button>
+</div>
+</div>
+
+<!-- HISTORY SCREEN -->
+<div id="screen-history" class="hidden">
+<div class="header">
+<h1>📊 Exam History</h1>
+</div>
+<div class="card" id="history-list">
+<p style="color:var(--text-light)">No exams taken yet.</p>
+</div>
+<div style="margin:16px 0;display:flex;gap:10px;flex-direction:column">
+<button class="btn btn-outline btn-block" onclick="showScreen('screen-home')">← Back</button>
+<button class="btn btn-danger btn-block btn-sm" onclick="clearHistory()">Clear History</button>
+</div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-modal hidden" id="modal-confirm">
+<div class="confirm-box">
+<h3>Submit Exam?</h3>
+<p id="modal-text">You have answered 28 of 30 questions.</p>
+<div class="confirm-actions">
+<button class="btn btn-outline" onclick="hideModal()">Cancel</button>
+<button class="btn btn-danger" onclick="submitExam()">Submit</button>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+// ===== QUESTION BANK (250 questions) =====
+const TOPICS = [
+"Electric Field","Electric Field Lines","Electric Potential",
+"Conductors and Electric Current","Resistance","Resistors",
+"Ohm's Law","Series and Parallel Connections","Electric Power",
+"Joule's Law","EMF"
+];
+
+function generateQuestionBank(){
+const Q = [];
+let id=0;
+function add(topic,question,options,correctIdx,explanation){
+Q.push({id:id++,topic,question,options,correctIdx,explanation});
+}
+
+// ===== ELECTRIC FIELD (25 questions) =====
+add("Electric Field","The electric field at a point is defined as:","The force experienced by a unit positive charge placed at that point|The force experienced by any charge at that point|The potential energy per unit charge|The work done in moving a charge to infinity".split("|"),0,"Electric field E = F/q₀, where q₀ is a positive test charge. It is force per unit positive charge, not per any arbitrary charge.");
+add("Electric Field","The SI unit of electric field strength is:","N/C|J/C|C/m²|N·m²/C²".split("|"),0,"E = F/q gives units of Newton per Coulomb (N/C), which is also equivalent to V/m.");
+add("Electric Field","Two point charges of +2 μC and −2 μC are separated by 0.1 m in vacuum. What is the magnitude of the force between them? (k = 9 × 10⁹ N·m²/C²)","3.6 N|0.36 N|36 N|360 N".split("|"),0,"F = kq₁q₂/r² = 9×10⁹ × (2×10⁻⁶)² / (0.1)² = 9×10⁹ × 4×10⁻¹² / 0.01 = 3.6 N. Common mistake: forgetting to square the distance or not converting μC to C.");
+add("Electric Field","A charge of 5 μC is placed in a uniform electric field of 2000 N/C. The force on the charge is:","0.01 N|0.1 N|10 N|100 N".split("|"),0,"F = qE = 5×10⁻⁶ × 2000 = 0.01 N. Students often forget to convert μC (10⁻⁶) to C.");
+add("Electric Field","The electric field due to a point charge Q at distance r is given by:","E = kQ/r²|E = kQ/r|E = kQ²/r²|E = kQ²/r".split("|"),0,"Coulomb's law for electric field: E = kQ/r². The field decreases with the square of the distance, not linearly.");
+add("Electric Field","If the distance from a point charge is doubled, the electric field becomes:","One quarter of the original|Half the original|One-eighth of the original|Double the original".split("|"),0,"E ∝ 1/r², so if r → 2r, E → E/4. This is the inverse square law.");
+add("Electric Field","An electron placed in an electric field pointing east will accelerate in which direction?","West|East|North|It remains stationary".split("|"),0,"Electrons carry negative charge, so they accelerate opposite to the field direction. Field points east → electron moves west.");
+add("Electric Field","The electric field inside a charged conductor in electrostatic equilibrium is:","Zero|Maximum|Equal to the surface field|Depends on the shape".split("|"),0,"In electrostatic equilibrium, charges reside on the surface and the internal field is zero. Any internal field would move charges, contradicting equilibrium.");
+add("Electric Field","What is the electric field at a distance of 0.5 m from a +4 μC charge in vacuum?","1.44 × 10⁵ N/C|2.88 × 10⁵ N/C|7.2 × 10⁴ N/C|3.6 × 10⁴ N/C".split("|"),0,"E = kQ/r² = 9×10⁹ × 4×10⁻⁶ / (0.5)² = 36000/0.25 = 1.44×10⁵ N/C.");
+add("Electric Field","The direction of the electric field vector at a point is:","The direction of force on a positive test charge|The direction of force on a negative test charge|Always radially inward|Perpendicular to the force on a charge".split("|"),0,"By definition, E points in the direction a positive test charge would be pushed.");
+add("Electric Field","Two charges of +3 μC each are 0.3 m apart. The force between them is:","0.9 N|2.7 N|9 N|0.09 N".split("|"),0,"F = kq₁q₂/r² = 9×10⁹ × (3×10⁻⁶)² / (0.3)² = 9×10⁹ × 9×10⁻¹² / 0.09 = 0.9 N.");
+add("Electric Field","Which quantity is a vector?","Electric field|Electric potential|Electric potential energy|Resistance".split("|"),0,"Electric field has both magnitude and direction, making it a vector. Potential, energy, and resistance are scalars.");
+add("Electric Field","A proton is released from rest in a uniform electric field. It will:","Accelerate in the direction of the field|Accelerate opposite to the field|Move in a circle|Remain stationary".split("|"),0,"A proton is positive, so the electric force on it is in the direction of the field, causing acceleration along the field.");
+add("Electric Field","The principle of superposition for electric fields states that:","The net field is the vector sum of individual fields|The net field is the product of individual fields|Only the strongest field matters|Fields from like charges cancel out completely".split("|"),0,"Superposition means we add field vectors from each charge individually. They don't multiply or cancel unless they're exactly equal and opposite.");
+add("Electric Field","What is the force between two charges of +1 C each separated by 1 m?","9 × 10⁹ N|9 × 10⁻⁹ N|1 N|9 N".split("|"),0,"F = kq₁q₂/r² = 9×10⁹ × 1 × 1 / 1 = 9×10⁹ N. This enormous force shows why 1 C is a very large charge.");
+add("Electric Field","The electric field between two large parallel plates with opposite charges is:","Uniform between the plates|Zero between the plates|Maximum at the center|Radial".split("|"),0,"Parallel plates create a uniform (constant) electric field between them, which is why they are used in many experiments.");
+add("Electric Field","A charge of −8 μC experiences a force of 0.04 N. The electric field magnitude at that point is:","5000 N/C|5 N/C|500 N/C|50000 N/C".split("|"),0,"E = F/|q| = 0.04 / 8×10⁻⁶ = 5000 N/C. We use the magnitude of the charge.");
+add("Electric Field","Which of the following doubles the electric field at a point due to a point charge?","Doubling the charge|Doubling the distance|Halving the charge|Squaring the distance".split("|"),0,"E = kQ/r². Doubling Q doubles E. Doubling r would reduce E to one-quarter.");
+add("Electric Field","The electric field at the midpoint between two equal positive charges is:","Zero|Maximum|Directed toward one of the charges|Infinite".split("|"),0,"At the midpoint, the two fields are equal in magnitude but opposite in direction, so they cancel to give zero net field.");
+add("Electric Field","Calculate the electric field at 0.2 m from a −5 nC charge.","1125 N/C|2250 N/C|225 N/C|11250 N/C".split("|"),0,"E = kQ/r² = 9×10⁹ × 5×10⁻⁹ / (0.2)² = 45/0.04 = 1125 N/C (magnitude).");
+add("Electric Field","If the electric field at a point is 600 N/C, the force on a 3 mC charge placed there is:","1.8 N|0.18 N|18 N|0.018 N".split("|"),0,"F = qE = 3×10⁻³ × 600 = 1.8 N. Remember 1 mC = 10⁻³ C.");
+add("Electric Field","Coulomb's constant k in SI units equals:","9 × 10⁹ N·m²/C²|9 × 10⁻⁹ N·m²/C²|8.85 × 10⁻¹² F/m|6.67 × 10⁻¹¹ N·m²/kg²".split("|"),0,"k = 9 × 10⁹ N·m²/C². The value 8.85 × 10⁻¹² F/m is ε₀ (permittivity), and 6.67 × 10⁻¹¹ is the gravitational constant.");
+add("Electric Field","The electric field is a conservative field. This means:","Work done in a closed loop is zero|The field is always uniform|The field is always zero inside conductors|The field only exists near charges".split("|"),0,"A conservative field means the work done moving a charge around any closed path is zero, implying path-independent work.");
+
+// ===== ELECTRIC FIELD LINES (22 questions) =====
+add("Electric Field Lines","Electric field lines around a positive point charge are:","Directed radially outward|Directed radially inward|Circular|Parallel".split("|"),0,"Field lines originate from positive charges and point outward, showing the direction a positive test charge would move.");
+add("Electric Field Lines","Electric field lines never:","Cross each other|Start from a charge|End on a charge|Exist in vacuum".split("|"),0,"If field lines crossed, there would be two directions of the field at that point, which is physically impossible.");
+add("Electric Field Lines","The number of field lines is proportional to:","The magnitude of the charge|The distance from the charge|The square of the charge|The potential energy".split("|"),0,"More field lines indicate a stronger charge. The density of lines represents field strength.");
+add("Electric Field Lines","At a point where electric field lines are close together, the field is:","Strong|Weak|Zero|Uniform".split("|"),0,"Closely spaced field lines indicate a region of strong electric field.");
+add("Electric Field Lines","Electric field lines for a uniform field are:","Parallel and equally spaced|Curved|Converging|Random".split("|"),0,"A uniform field has constant magnitude and direction everywhere, represented by parallel equally-spaced lines.");
+add("Electric Field Lines","Field lines around an isolated negative charge:","Point radially inward toward the charge|Point radially outward|Are circular loops|Point upward".split("|"),0,"Field lines end on negative charges, so they point inward toward an isolated negative charge.");
+add("Electric Field Lines","The tangent to an electric field line at any point gives:","The direction of the electric field at that point|The magnitude of the field|The potential at that point|The force on a negative charge".split("|"),0,"By definition, the tangent to a field line gives the direction of E at that point.");
+add("Electric Field Lines","Electric field lines between two equal and opposite charges form a pattern called:","A dipole pattern|A quadrupole pattern|Circular loops|Parallel lines".split("|"),0,"Two equal and opposite charges create an electric dipole, with field lines going from the positive to the negative charge.");
+add("Electric Field Lines","Two parallel plates with equal and opposite charges have field lines that are:","Straight and perpendicular to the plates|Curved|Circular|Radial".split("|"),0,"Between parallel plates, the field is uniform, so lines are straight, parallel, and perpendicular to the plate surfaces.");
+add("Electric Field Lines","Electric field lines:","Always start from positive charges and end on negative charges|Can form closed loops|Always start from negative charges|Have no specific starting or ending point".split("|"),0,"Electrostatic field lines originate on positive charges and terminate on negative charges (or go to infinity).");
+add("Electric Field Lines","If a region has no electric field lines passing through it, the electric field there is:","Zero|Infinite|Uniform|Undefined".split("|"),0,"No field lines in a region means the electric field magnitude is zero there.");
+add("Electric Field Lines","The electric field lines for two equal positive charges:","Repel and never cross each other|Attract and merge|Form closed loops|Pass through each other".split("|"),0,"Like charges repel; their field lines push away from each other and never cross.");
+add("Electric Field Lines","A conductor in electrostatic equilibrium has electric field lines that are:","Perpendicular to its surface|Parallel to its surface|At 45° to the surface|Absent near the surface".split("|"),0,"If field lines had a component along the surface, charges would move (not in equilibrium). So lines must be perpendicular.");
+add("Electric Field Lines","Which statement about electric field lines is FALSE?","Field lines can form closed loops in electrostatics|Field lines go from high potential to low potential|Closer lines mean stronger field|Field lines never cross".split("|"),0,"In electrostatics, field lines do NOT form closed loops — they start and end on charges. Closed loops occur only with changing magnetic fields.");
+add("Electric Field Lines","The density of electric field lines through a surface is related to:","The electric flux through that surface|The magnetic flux|The current through the surface|The resistance of the surface".split("|"),0,"Electric flux Φ = E·A is proportional to the number of field lines passing through a surface.");
+add("Electric Field Lines","Near a sharp point on a conductor, electric field lines are:","Closely packed (field is stronger)|Widely spaced (field is weaker)|Absent|Parallel to the surface".split("|"),0,"Charge density is highest at sharp points on conductors, making the electric field strongest there — lines are closely packed.");
+add("Electric Field Lines","A uniform electric field has field lines that are:","Equidistant and parallel|Converging toward a point|Diverging from a point|Curved".split("|"),0,"Uniform field = constant E everywhere, depicted by equally spaced parallel lines.");
+add("Electric Field Lines","If the electric field at every point on a closed surface is zero, then the charge enclosed is:","Zero|Positive|Negative|Cannot be determined".split("|"),0,"By Gauss's law, if E = 0 everywhere on a closed surface, the net enclosed charge must be zero.");
+add("Electric Field Lines","Electric field lines of a dipole are:","Curved lines going from the positive to the negative charge|Straight lines between the charges|Circular loops|Only present between the charges".split("|"),0,"Dipole field lines curve from the positive charge to the negative charge, extending also to infinity.");
+add("Electric Field Lines","What can you conclude if more field lines leave a surface than enter it?","There is a net positive charge inside|There is a net negative charge inside|The region is field-free|The surface is a conductor".split("|"),0,"Net outgoing field lines imply net positive charge enclosed (by Gauss's law).");
+add("Electric Field Lines","Electric field lines around a conducting sphere with charge +Q are:","Radial and point outward|Tangential to the sphere|Absent outside the sphere|Only present inside the sphere".split("|"),0,"A charged conducting sphere behaves like a point charge externally, with radial field lines pointing outward for positive charge.");
+add("Electric Field Lines","Which of the following is true about electric field lines inside a conductor?","There are no field lines|Field lines are parallel|Field lines form closed loops|Field lines converge to the center".split("|"),0,"In electrostatic equilibrium, E = 0 inside a conductor, so no field lines exist there.");
+
+// ===== ELECTRIC POTENTIAL (24 questions) =====
+add("Electric Potential","Electric potential at a point is defined as:","Work done per unit positive charge in bringing it from infinity to that point|Force per unit charge|Energy per unit area|Charge per unit distance".split("|"),0,"V = W/q. It is the work done (by external agent) per unit positive charge moved from infinity to the point.");
+add("Electric Potential","The SI unit of electric potential is:","Volt (V)|Newton (N)|Coulomb (C)|Joule (J)".split("|"),0,"Potential is measured in volts. 1 V = 1 J/C.");
+add("Electric Potential","The potential due to a point charge +Q at distance r is:","V = kQ/r|V = kQ/r²|V = kQ²/r|V = kQr".split("|"),0,"V = kQ/r. Unlike electric field (which goes as 1/r²), potential decreases as 1/r.");
+add("Electric Potential","Electric potential is a:","Scalar quantity|Vector quantity|Tensor quantity|Dimensionless quantity".split("|"),0,"Potential has magnitude only (with sign), no direction. It is a scalar, unlike electric field which is a vector.");
+add("Electric Potential","The electric potential at a point due to a −3 μC charge at 0.3 m is:","−9 × 10⁴ V|+9 × 10⁴ V|−3 × 10⁴ V|+3 × 10⁴ V".split("|"),0,"V = kQ/r = 9×10⁹ × (−3×10⁻⁶)/0.3 = −9×10⁴ V. Negative charge gives negative potential.");
+add("Electric Potential","The potential difference between two points A and B is:","VA − VB|VA + VB|VA × VB|VA / VB".split("|"),0,"Potential difference (or voltage) from A to B is defined as VA − VB.");
+add("Electric Potential","An equipotential surface is one where:","The potential is the same at every point|The electric field is maximum|The charge density is uniform|The field lines are parallel".split("|"),0,"By definition, an equipotential surface has constant potential everywhere on it.");
+add("Electric Potential","The work done in moving a charge along an equipotential surface is:","Zero|Maximum|Equal to the potential|Equal to the kinetic energy".split("|"),0,"Since potential is constant on an equipotential surface, no potential difference means no work done: W = qΔV = 0.");
+add("Electric Potential","Electric field lines are always _____ to equipotential surfaces.","Perpendicular|Parallel|At 45°|Tangent".split("|"),0,"E is the negative gradient of V, so field lines are always perpendicular to equipotential surfaces.");
+add("Electric Potential","If 20 J of work is done to move 4 C of charge between two points, the potential difference is:","5 V|80 V|0.2 V|24 V".split("|"),0,"V = W/q = 20/4 = 5 V.");
+add("Electric Potential","The relationship between electric field and potential is:","E = −dV/dr|E = dV/dr|E = V/r²|E = V × r".split("|"),0,"The electric field is the negative gradient of the potential. The negative sign indicates E points from high to low potential.");
+add("Electric Potential","A region where the electric potential is constant everywhere has an electric field that is:","Zero|Uniform|Maximum|Varying".split("|"),0,"If V is constant, dV/dr = 0, so E = −dV/dr = 0.");
+add("Electric Potential","Calculate the potential at 0.1 m from a +2 μC charge.","1.8 × 10⁵ V|9 × 10⁵ V|1.8 × 10³ V|9 × 10³ V".split("|"),0,"V = kQ/r = 9×10⁹ × 2×10⁻⁶ / 0.1 = 1.8×10⁵ V.");
+add("Electric Potential","Two charges +4 μC and −4 μC are at points A and B respectively. The potential at the midpoint is:","Zero|8kq/d|4kq/d|2kq/d".split("|"),0,"At the midpoint, the positive and negative potentials are equal in magnitude but opposite in sign, so V_total = kq/r + k(−q)/r = 0.");
+add("Electric Potential","An electron volt (eV) is:","The energy gained by an electron through a potential difference of 1 V|A unit of electric potential|A unit of charge|A unit of current".split("|"),0,"1 eV = 1.6×10⁻¹⁹ J, the energy an electron gains (or loses) moving through 1 V. It's a unit of energy, not potential.");
+add("Electric Potential","A proton moves from a region of potential 100 V to 50 V. The work done by the electric field is:","+50 eV|−50 eV|+150 eV|0 eV".split("|"),0,"W = qΔV = q(V_initial − V_final) = e(100−50) = +50 eV. Positive work means the field accelerates the proton.");
+add("Electric Potential","The electric potential energy of a system of two point charges is:","U = kq₁q₂/r|U = kq₁q₂/r²|U = kq₁q₂r|U = kq₁q₂r²".split("|"),0,"Potential energy U = kq₁q₂/r. This is the work done to assemble the charges from infinity.");
+add("Electric Potential","When a positive charge moves from high potential to low potential, the electric field does:","Positive work|Negative work|Zero work|Work equal to the charge".split("|"),0,"The electric force moves positive charges from high to low potential naturally, doing positive work.");
+add("Electric Potential","The potential energy of a +2 μC charge at a point where V = 500 V is:","1 × 10⁻³ J|2.5 × 10⁻⁴ J|1 J|1000 J".split("|"),0,"U = qV = 2×10⁻⁶ × 500 = 1×10⁻³ J.");
+add("Electric Potential","Volt can also be expressed as:","J/C|N/m|C/s|W/V".split("|"),0,"1 Volt = 1 Joule per Coulomb. This comes from V = W/q.");
+add("Electric Potential","If the electric potential decreases uniformly from left to right, the electric field points:","From left to right|From right to left|Upward|Downward".split("|"),0,"E = −dV/dr. If V decreases from left to right (dV/dr < 0), then E is positive in the left-to-right direction.");
+add("Electric Potential","How much work is needed to move a −5 μC charge through a potential difference of 200 V?","−1 × 10⁻³ J|+1 × 10⁻³ J|−1 J|+1 J".split("|"),0,"W = qΔV = (−5×10⁻⁶)(200) = −1×10⁻³ J. The negative sign reflects the charge being negative.");
+add("Electric Potential","The potential at infinity is taken as:","Zero|Maximum|Minimum|Undefined".split("|"),0,"By convention, the reference point for potential is at infinity where V = 0.");
+add("Electric Potential","If two points have the same electric potential, the electric field between them is:","Not necessarily zero — only the component along the line joining them is zero|Always zero|Always maximum|Undefined".split("|"),0,"Same potential means no potential difference along that line, so the field component along that direction is zero. But the field may have perpendicular components.");
+
+// ===== CONDUCTORS AND ELECTRIC CURRENT (23 questions) =====
+add("Conductors and Electric Current","Electric current is defined as:","The rate of flow of electric charge|The amount of charge in a conductor|The force on a charge|The potential difference across a conductor".split("|"),0,"I = dQ/dt. Current is charge flowing per unit time.");
+add("Conductors and Electric Current","The SI unit of electric current is:","Ampere (A)|Volt (V)|Ohm (Ω)|Watt (W)".split("|"),0,"Current is measured in amperes. 1 A = 1 C/s.");
+add("Conductors and Electric Current","In a metallic conductor, current is carried by:","Free electrons|Protons|Positive ions|Neutrons".split("|"),0,"In metals, the free (valence) electrons are the charge carriers. The positive ion lattice is fixed.");
+add("Conductors and Electric Current","Conventional current direction is:","Opposite to electron flow|Same as electron flow|Random|Perpendicular to electron flow".split("|"),0,"Conventional current flows from positive to negative (historically), which is opposite to the actual electron drift direction.");
+add("Conductors and Electric Current","If 10 C of charge flows through a wire in 2 seconds, the current is:","5 A|20 A|0.2 A|12 A".split("|"),0,"I = Q/t = 10/2 = 5 A.");
+add("Conductors and Electric Current","A conductor differs from an insulator because conductors have:","Free charge carriers available for conduction|No atoms|Stronger bonds|Higher density".split("|"),0,"Conductors have free electrons (or other carriers) that can move under an electric field, unlike insulators where charges are tightly bound.");
+add("Conductors and Electric Current","The drift velocity of electrons in a conductor is typically:","A few mm/s|Close to the speed of light|Zero|Several km/s".split("|"),0,"Despite current flowing almost instantly (the electric field propagates at near light speed), individual electrons drift very slowly, typically mm/s.");
+add("Conductors and Electric Current","If a steady current of 2 A flows for 5 minutes, the total charge transferred is:","600 C|10 C|150 C|7 C".split("|"),0,"Q = It = 2 × (5×60) = 2 × 300 = 600 C. Convert minutes to seconds first.");
+add("Conductors and Electric Current","Which of the following is a good conductor of electricity?","Copper|Glass|Rubber|Plastic".split("|"),0,"Copper is one of the best metallic conductors. Glass, rubber, and plastic are insulators.");
+add("Conductors and Electric Current","Current density J is defined as:","Current per unit cross-sectional area|Total current in a wire|Charge per unit length|Potential per unit length".split("|"),0,"J = I/A, measured in A/m². It describes how current is distributed over the cross-section.");
+add("Conductors and Electric Current","A wire carries 3 A of current. How many electrons pass a point per second? (e = 1.6×10⁻¹⁹ C)","1.875 × 10¹⁹|3 × 10¹⁹|4.8 × 10⁻¹⁹|1.6 × 10¹⁹".split("|"),0,"n = I/e = 3 / (1.6×10⁻¹⁹) = 1.875 × 10¹⁹ electrons per second.");
+add("Conductors and Electric Current","Semiconductors have conductivity that:","Increases with temperature|Decreases with temperature|Is always zero|Is always infinite".split("|"),0,"Unlike metals, semiconductors get more conductive when heated because more electrons gain enough energy to cross the band gap.");
+add("Conductors and Electric Current","The current through a conductor is 0.5 A. How much charge flows in 10 seconds?","5 C|0.05 C|50 C|0.5 C".split("|"),0,"Q = It = 0.5 × 10 = 5 C.");
+add("Conductors and Electric Current","Which material would have the highest electrical conductivity?","Silver|Wood|Distilled water|Air".split("|"),0,"Silver is the most conductive element. Wood, distilled water, and air are poor conductors or insulators.");
+add("Conductors and Electric Current","The direction of conventional current in an external circuit is from:","Positive terminal to negative terminal|Negative terminal to positive terminal|Low potential to high potential|It has no specific direction".split("|"),0,"Conventional current flows externally from + to − terminal (high to low potential).");
+add("Conductors and Electric Current","When a potential difference is applied across a conductor, the free electrons:","Drift toward the positive terminal|Drift toward the negative terminal|Stop moving|Move in random directions only".split("|"),0,"Electrons (negative) are attracted toward the positive terminal, superimposing a drift on their random thermal motion.");
+add("Conductors and Electric Current","The relationship between current I, number of carriers n, charge e, area A, and drift velocity vd is:","I = nAevd|I = nAe/vd|I = ne/Avd|I = Avd/ne".split("|"),0,"This fundamental relation shows current depends on carrier density, cross-section, charge, and drift velocity.");
+add("Conductors and Electric Current","An ammeter should be connected in a circuit:","In series with the component|In parallel with the component|At the end of the circuit|Across the battery".split("|"),0,"Ammeters measure current flowing through a component and must be in series to do so. Parallel connection would short-circuit.");
+add("Conductors and Electric Current","A good conductor has:","Low resistivity|High resistivity|No free electrons|Infinite resistance".split("|"),0,"Good conductors have low resistivity, meaning they resist current flow very little.");
+add("Conductors and Electric Current","If 3600 C of charge passes through a device in 1 hour, the current is:","1 A|3600 A|60 A|0.1 A".split("|"),0,"I = Q/t = 3600 / 3600 = 1 A (1 hour = 3600 seconds).");
+add("Conductors and Electric Current","The thermal motion of electrons in a conductor without any applied field results in:","Zero net current|A large current|A steady current|An alternating current".split("|"),0,"Without an applied field, electrons move randomly in all directions, and the net drift (and hence net current) is zero.");
+add("Conductors and Electric Current","A current of 200 mA flows through a lamp. In coulombs, the charge passing in 1 minute is:","12 C|200 C|0.2 C|2000 C".split("|"),0,"Q = It = 0.2 × 60 = 12 C. Remember 200 mA = 0.2 A and 1 min = 60 s.");
+add("Conductors and Electric Current","Superconductors are materials that:","Have zero resistance below a critical temperature|Have infinite resistance|Are always insulators|Only conduct at very high temperatures".split("|"),0,"Below a critical temperature, superconductors lose all resistance, allowing current to flow without energy loss.");
+
+// ===== RESISTANCE (23 questions) =====
+add("Resistance","Electrical resistance of a conductor depends on:","Length, cross-sectional area, and material|Only the length|Only the material|Only the applied voltage".split("|"),0,"R = ρL/A, so resistance depends on resistivity (material), length, and cross-sectional area.");
+add("Resistance","The SI unit of resistance is:","Ohm (Ω)|Ampere (A)|Volt (V)|Siemens (S)".split("|"),0,"Resistance is measured in ohms (Ω). 1 Ω = 1 V/A.");
+add("Resistance","The formula for resistance in terms of resistivity is:","R = ρL/A|R = ρA/L|R = L/ρA|R = ρLA".split("|"),0,"R = ρL/A. Longer wires have more resistance; thicker wires have less resistance.");
+add("Resistance","If the length of a wire is doubled while keeping the area constant, the resistance:","Doubles|Halves|Remains the same|Quadruples".split("|"),0,"R = ρL/A. Doubling L doubles R, since R is directly proportional to length.");
+add("Resistance","If the cross-sectional area of a wire is doubled, the resistance:","Halves|Doubles|Quadruples|Remains the same".split("|"),0,"R = ρL/A. Doubling A halves R, since R is inversely proportional to area.");
+add("Resistance","Resistivity is measured in:","Ω·m|Ω|Ω/m|m/Ω".split("|"),0,"From R = ρL/A, we get ρ = RA/L, giving units of Ω·m (ohm-meter).");
+add("Resistance","A wire of length 2 m and cross-sectional area 1 mm² has resistivity 1.7 × 10⁻⁸ Ω·m. Its resistance is:","0.034 Ω|3.4 Ω|0.34 Ω|34 Ω".split("|"),0,"R = ρL/A = 1.7×10⁻⁸ × 2 / (1×10⁻⁶) = 3.4×10⁻⁸ / 10⁻⁶ = 0.034 Ω. Convert mm² to m²: 1 mm² = 10⁻⁶ m².");
+add("Resistance","For most metals, resistance _____ with increasing temperature.","Increases|Decreases|Remains constant|First increases then decreases".split("|"),0,"In metals, higher temperature increases lattice vibrations, scattering electrons more and increasing resistance.");
+add("Resistance","The reciprocal of resistance is called:","Conductance|Resistivity|Capacitance|Inductance".split("|"),0,"Conductance G = 1/R, measured in siemens (S).");
+add("Resistance","A nichrome wire has resistance 20 Ω at 20°C with temperature coefficient α = 0.0004/°C. Its resistance at 100°C is approximately:","20.64 Ω|21.6 Ω|24 Ω|20.06 Ω".split("|"),0,"R = R₀(1 + αΔT) = 20(1 + 0.0004 × 80) = 20(1.032) = 20.64 Ω.");
+add("Resistance","Which of the following has the lowest resistivity?","Silver|Iron|Nichrome|Carbon".split("|"),0,"Silver has the lowest resistivity (~1.59 × 10⁻⁸ Ω·m) of all elements, making it the best conductor.");
+add("Resistance","A 100 m copper wire has resistance 0.5 Ω. If cut to 50 m, the new resistance is:","0.25 Ω|1.0 Ω|0.5 Ω|0.125 Ω".split("|"),0,"R ∝ L. Half the length means half the resistance: 0.5/2 = 0.25 Ω.");
+add("Resistance","The temperature coefficient of resistance for a semiconductor is:","Negative|Positive|Zero|Infinite".split("|"),0,"Semiconductors have negative temperature coefficients — their resistance decreases as temperature increases.");
+add("Resistance","A wire has resistance 10 Ω. If its length is tripled and its radius is doubled, the new resistance is:","7.5 Ω|30 Ω|2.5 Ω|15 Ω".split("|"),0,"R = ρL/A. New R = ρ(3L)/(π(2r)²) = 3ρL/(4πr²) = (3/4)×10 = 7.5 Ω. Area ∝ r², so doubling radius quadruples the area.");
+add("Resistance","Conductance is measured in:","Siemens (S)|Ohms (Ω)|Farads (F)|Henrys (H)".split("|"),0,"Conductance G = 1/R is measured in siemens (S), formerly called mhos.");
+add("Resistance","Which factor does NOT affect the resistance of a metallic conductor?","The current flowing through it|Its length|Its cross-sectional area|Its material (resistivity)".split("|"),0,"For an ohmic conductor, R = ρL/A depends on geometry and material, not on the current. Current is determined by V and R.");
+add("Resistance","A wire of resistance 12 Ω is stretched to twice its original length. Its new resistance is:","48 Ω|24 Ω|6 Ω|96 Ω".split("|"),0,"When stretched to twice the length, volume stays constant so A becomes A/2. New R = ρ(2L)/(A/2) = 4ρL/A = 4×12 = 48 Ω.");
+add("Resistance","The resistance of a 5 m wire with resistivity 2 × 10⁻⁷ Ω·m and cross-section 2 × 10⁻⁶ m² is:","0.5 Ω|5 Ω|0.05 Ω|50 Ω".split("|"),0,"R = ρL/A = 2×10⁻⁷ × 5 / (2×10⁻⁶) = 10⁻⁶ / 2×10⁻⁶ = 0.5 Ω.");
+add("Resistance","An ohmic conductor is one that:","Obeys Ohm's law (V ∝ I)|Has zero resistance|Has infinite conductance|Changes resistance with current".split("|"),0,"Ohmic conductors have constant resistance regardless of applied voltage, so V vs I is a straight line through the origin.");
+add("Resistance","Which of these is a non-ohmic device?","A diode|A copper wire|A carbon resistor|An aluminum rod".split("|"),0,"A diode has a non-linear V-I characteristic and does not obey Ohm's law. Metals and carbon resistors at constant temperature are approximately ohmic.");
+add("Resistance","If a wire's diameter is halved, its resistance becomes:","16 times the original|4 times the original|2 times the original|8 times the original".split("|"),0,"Diameter halved → radius halved → area = π(r/2)² = πr²/4 (one quarter). R = ρL/A → R becomes 4 times... Wait, but the wire wasn't stretched. If only diameter is reduced: R_new = ρL/(A/4) = 4R. Actually, this is just changing the area. R = ρL/A, A ∝ d², so halving d → A/4, R × 4. But the answer says 16. Let me reconsider — if the wire is drawn to half diameter maintaining same volume: L doubles, A quarters, so R = ρ(2L)/(A/4) = 8ρL/A... Hmm, let me fix this to just area change.");
+
+// Fix the above — let's just do simple area change
+Q[Q.length-1] = {id:Q[Q.length-1].id, topic:"Resistance", question:"If the diameter of a wire is halved (without changing length), its resistance becomes:", options:["4 times the original","2 times the original","8 times the original","Half the original"], correctIdx:0, explanation:"A = π(d/2)² = πd²/4. Halving d → A becomes πd²/16, which is 1/4 of original area. R = ρL/A, so R increases by factor 4."};
+
+add("Resistance","The resistance of a conductor at absolute zero (for a normal metal) would be:","Very small but not zero|Exactly zero|Infinite|The same as at room temperature".split("|"),0,"Normal metals retain a small residual resistance at 0 K due to impurities and defects. Only superconductors reach exactly zero.");
+add("Resistance","Resistivity of a material is an _____ property.","Intrinsic (material-dependent)|Extrinsic|Size-dependent|Shape-dependent".split("|"),0,"Resistivity ρ depends only on the material and temperature, not on the dimensions of the sample. It is an intrinsic property.");
+
+// ===== RESISTORS (22 questions) =====
+add("Resistors","A resistor is a component designed to:","Provide a specific resistance in a circuit|Store charge|Generate voltage|Amplify current".split("|"),0,"Resistors are passive components that introduce a known resistance to control current and voltage in circuits.");
+add("Resistors","The color bands on a resistor are used to:","Indicate its resistance value and tolerance|Show its temperature rating|Indicate its power rating|Identify the manufacturer".split("|"),0,"The color code (brown=1, red=2, etc.) encodes resistance value and tolerance. Power rating is usually stated separately.");
+add("Resistors","A resistor with bands Brown-Black-Red-Gold has a resistance of:","1000 Ω ± 5%|100 Ω ± 5%|10000 Ω ± 5%|10 Ω ± 5%".split("|"),0,"Brown=1, Black=0, Red=×100 (multiplier), Gold=±5%. So 10 × 100 = 1000 Ω = 1 kΩ ± 5%.");
+add("Resistors","A variable resistor used to control current is called a:","Rheostat|Capacitor|Transformer|Diode".split("|"),0,"A rheostat is a variable resistor connected in series to adjust the current in a circuit.");
+add("Resistors","A potentiometer is a variable resistor used primarily for:","Varying voltage (potential divider)|Storing energy|Measuring temperature|Generating AC".split("|"),0,"A potentiometer acts as an adjustable voltage divider, allowing you to tap any voltage from 0 to the supply voltage.");
+add("Resistors","The tolerance of a resistor with a gold band is:","±5%|±10%|±1%|±20%".split("|"),0,"Gold = ±5%, Silver = ±10%, no band = ±20%, Brown = ±1%.");
+add("Resistors","A 470 Ω resistor has tolerance ±10%. Its actual resistance could be anywhere from:","423 Ω to 517 Ω|460 Ω to 480 Ω|370 Ω to 570 Ω|470 Ω exactly".split("|"),0,"±10% of 470 = ±47. Range: 423 to 517 Ω.");
+add("Resistors","Fixed resistors differ from variable resistors because fixed resistors:","Have a constant resistance value|Can change their resistance|Have infinite resistance|Have zero resistance".split("|"),0,"Fixed resistors have a set, unchangeable resistance, unlike variable resistors (rheostats, potentiometers).");
+add("Resistors","A resistor with color code Red-Violet-Orange-Silver has resistance:","27000 Ω ± 10%|270 Ω ± 10%|2700 Ω ± 10%|27 Ω ± 10%".split("|"),0,"Red=2, Violet=7, Orange=×1000, Silver=±10%. So 27 × 1000 = 27000 Ω = 27 kΩ.");
+add("Resistors","Power rating of a resistor indicates:","Maximum power it can safely dissipate|Its resistance value|Its voltage rating|Its current capacity".split("|"),0,"If a resistor dissipates more than its rated power, it will overheat and may be damaged or catch fire.");
+add("Resistors","Wire-wound resistors are preferred for:","High-power applications|Very high-frequency circuits|Digital circuits|Low-resistance needs only".split("|"),0,"Wire-wound resistors handle high power because the wire can dissipate heat effectively.");
+add("Resistors","A light-dependent resistor (LDR) changes resistance based on:","Light intensity|Temperature|Pressure|Humidity".split("|"),0,"LDR resistance decreases as light intensity increases. In darkness, it has very high resistance.");
+add("Resistors","A thermistor is a resistor whose resistance varies significantly with:","Temperature|Light|Voltage|Current frequency".split("|"),0,"Thermistors are temperature-sensitive resistors. NTC types decrease in resistance with temperature; PTC types increase.");
+add("Resistors","In the resistor color code, the color orange represents:","3|4|5|2".split("|"),0,"The color code order: Black=0, Brown=1, Red=2, Orange=3, Yellow=4, Green=5, Blue=6, Violet=7, Grey=8, White=9.");
+add("Resistors","Carbon film resistors are widely used because they are:","Inexpensive and reasonably accurate|The most precise available|Able to handle very high power|Superconducting at room temperature".split("|"),0,"Carbon film resistors are cheap, available in many values, and accurate enough for most applications.");
+add("Resistors","If a resistor is rated at 0.25 W and has resistance 100 Ω, the maximum current it can carry is:","50 mA|250 mA|25 mA|100 mA".split("|"),0,"P = I²R → I = √(P/R) = √(0.25/100) = √(0.0025) = 0.05 A = 50 mA.");
+add("Resistors","The maximum voltage that can be applied across a 1 kΩ, 0.5 W resistor is approximately:","22.4 V|50 V|500 V|0.5 V".split("|"),0,"P = V²/R → V = √(PR) = √(0.5 × 1000) = √500 ≈ 22.4 V.");
+add("Resistors","A 220 Ω resistor is needed. The correct color code is:","Red-Red-Brown|Red-Red-Red|Red-Red-Orange|Red-Red-Black".split("|"),0,"Red=2, Red=2, Brown=×10. So 22 × 10 = 220 Ω.");
+add("Resistors","Surface mount resistors (SMD) are primarily used in:","Compact electronic devices and circuit boards|Power stations|High-voltage applications|Audio speakers".split("|"),0,"SMD resistors are tiny and designed for automated soldering onto printed circuit boards in compact devices.");
+add("Resistors","A resistor color coded Green-Blue-Yellow has resistance:","560 kΩ|56 kΩ|5.6 MΩ|5600 Ω".split("|"),0,"Green=5, Blue=6, Yellow=×10000. So 56 × 10000 = 560000 Ω = 560 kΩ.");
+add("Resistors","The purpose of a pull-up resistor in a circuit is to:","Ensure a defined logic level when no input is active|Increase current flow|Reduce power consumption|Block AC signals".split("|"),0,"Pull-up resistors connect to VCC to keep an input at HIGH when not actively driven LOW, preventing floating inputs.");
+add("Resistors","When current flows through a resistor, the resistor:","Dissipates energy as heat|Stores energy as charge|Generates a magnetic field only|Increases the total circuit energy".split("|"),0,"Resistors convert electrical energy into heat (Joule heating). They do not store energy like capacitors or inductors.");
+
+// ===== OHM'S LAW (23 questions) =====
+add("Ohm's Law","Ohm's Law states that:","V = IR, provided temperature remains constant|V = I/R|V = I²R|P = IV".split("|"),0,"Ohm's Law: the voltage across a conductor is proportional to the current through it, at constant temperature. V = IR.");
+add("Ohm's Law","If a 12 V battery drives a current of 3 A through a resistor, the resistance is:","4 Ω|36 Ω|0.25 Ω|15 Ω".split("|"),0,"R = V/I = 12/3 = 4 Ω.");
+add("Ohm's Law","A 10 Ω resistor carries 2 A. The voltage across it is:","20 V|5 V|0.2 V|12 V".split("|"),0,"V = IR = 2 × 10 = 20 V.");
+add("Ohm's Law","Ohm's Law is NOT obeyed by:","A semiconductor diode|A metallic conductor at constant temperature|A carbon resistor at constant temperature|A nichrome wire at constant temperature".split("|"),0,"A diode has a non-linear V-I relationship and does not obey Ohm's law. The others are approximately ohmic at constant temperature.");
+add("Ohm's Law","The V-I graph for an ohmic conductor is:","A straight line through the origin|A curved line|A horizontal line|A vertical line".split("|"),0,"For ohmic conductors, V ∝ I (constant R), giving a straight line through the origin with slope = R.");
+add("Ohm's Law","If the voltage across a resistor is doubled while resistance stays constant, the current:","Doubles|Halves|Remains the same|Quadruples".split("|"),0,"From I = V/R, doubling V doubles I (direct proportionality).");
+add("Ohm's Law","A wire has a current of 0.5 A when 10 V is applied. Its resistance is:","20 Ω|5 Ω|0.05 Ω|200 Ω".split("|"),0,"R = V/I = 10/0.5 = 20 Ω.");
+add("Ohm's Law","A device draws 500 mA from a 9 V supply. Its resistance is:","18 Ω|4500 Ω|0.056 Ω|4.5 Ω".split("|"),0,"R = V/I = 9/0.5 = 18 Ω. Remember to convert 500 mA = 0.5 A.");
+add("Ohm's Law","The slope of the I-V characteristic of a conductor gives:","The conductance (1/R)|The resistance|The power|The energy".split("|"),0,"If I is on the y-axis and V on x-axis, slope = I/V = 1/R = conductance G.");
+add("Ohm's Law","What current flows through a 47 kΩ resistor with 9.4 V across it?","0.2 mA|200 mA|2 mA|20 mA".split("|"),0,"I = V/R = 9.4 / 47000 = 0.0002 A = 0.2 mA.");
+add("Ohm's Law","A lamp rated 12 V, 36 W has resistance:","4 Ω|3 Ω|0.33 Ω|432 Ω".split("|"),0,"P = V²/R → R = V²/P = 144/36 = 4 Ω.");
+add("Ohm's Law","For Ohm's Law to apply, which condition must be met?","Temperature must remain constant|Current must be very high|Voltage must be DC only|The conductor must be a semiconductor".split("|"),0,"Ohm's Law holds when resistance is constant, which requires constant temperature (for metallic conductors).");
+add("Ohm's Law","The current through a 220 Ω resistor connected to a 220 V supply is:","1 A|220 A|0.001 A|100 A".split("|"),0,"I = V/R = 220/220 = 1 A.");
+add("Ohm's Law","If a circuit has a fixed voltage source and the resistance is halved, the current:","Doubles|Halves|Quadruples|Remains the same".split("|"),0,"I = V/R. Halving R doubles I (inverse proportionality).");
+add("Ohm's Law","A student measures 6 V across a component carrying 0.02 A. The resistance is:","300 Ω|0.12 Ω|3.33 Ω|120 Ω".split("|"),0,"R = V/I = 6/0.02 = 300 Ω.");
+add("Ohm's Law","Which graph represents a filament lamp (non-ohmic)?","A curve that becomes less steep at higher V|A straight line through the origin|A horizontal line|A vertical line".split("|"),0,"A filament lamp heats up, increasing resistance. So current increases less than proportionally with voltage — the curve flattens.");
+add("Ohm's Law","A circuit has two 10 Ω resistors in series with a 20 V battery. The current is:","1 A|2 A|4 A|0.5 A".split("|"),0,"Total R = 10 + 10 = 20 Ω. I = V/R = 20/20 = 1 A.");
+add("Ohm's Law","A student claims that doubling both the voltage and resistance will double the current. This is:","Incorrect — the current remains the same|Correct|Partially correct|Only true for AC circuits".split("|"),0,"I = V/R. If both V and R are doubled: I = 2V/2R = V/R. The current is unchanged.");
+add("Ohm's Law","A voltmeter should be connected:","In parallel with the component|In series with the component|In place of the component|Before the battery".split("|"),0,"Voltmeters measure potential difference and must be in parallel. They have very high resistance to draw minimal current.");
+add("Ohm's Law","In Ohm's Law V = IR, if I is in milliamps and R is in kilohms, V is in:","Volts|Millivolts|Kilovolts|Megavolts".split("|"),0,"mA × kΩ = (10⁻³ A)(10³ Ω) = 1 V. The prefixes cancel out.");
+add("Ohm's Law","A 5 V source drives current through a 2.5 Ω and a 7.5 Ω resistor in series. The voltage across the 7.5 Ω resistor is:","3.75 V|1.25 V|5 V|7.5 V".split("|"),0,"Total R = 10 Ω. I = 5/10 = 0.5 A. V₇.₅ = IR = 0.5 × 7.5 = 3.75 V.");
+add("Ohm's Law","The resistance of a conductor can be determined from the V-I graph by:","Calculating the slope of V vs I (or reciprocal of slope of I vs V)|Finding the y-intercept|Measuring the area under the curve|Counting the grid squares".split("|"),0,"R = V/I = slope of V-I graph. If I is on y-axis and V on x-axis, then R = 1/slope.");
+add("Ohm's Law","An ideal ammeter has:","Zero resistance|Infinite resistance|1 Ω resistance|High resistance".split("|"),0,"An ideal ammeter should not affect the circuit, so it has zero resistance. Any resistance would reduce the current being measured.");
+
+// ===== SERIES AND PARALLEL CONNECTIONS (25 questions) =====
+add("Series and Parallel Connections","In a series circuit, the current:","Is the same through all components|Is different through each component|Is zero|Increases at each component".split("|"),0,"In series, there is only one path for current, so the same current flows through every component.");
+add("Series and Parallel Connections","The total resistance of resistors in series is:","The sum of all individual resistances|Less than the smallest resistance|The product divided by the sum|The reciprocal of the sum".split("|"),0,"R_total = R₁ + R₂ + R₃ + ... In series, resistances add up directly.");
+add("Series and Parallel Connections","Three resistors of 4 Ω, 6 Ω, and 10 Ω are connected in series. The total resistance is:","20 Ω|1.96 Ω|3.33 Ω|60 Ω".split("|"),0,"R = 4 + 6 + 10 = 20 Ω. In series, just add them up.");
+add("Series and Parallel Connections","In a parallel circuit, the voltage across each branch is:","The same|Different for each branch|Zero|Proportional to resistance".split("|"),0,"In parallel, all branches connect to the same two nodes, so the voltage across each branch is identical.");
+add("Series and Parallel Connections","The total resistance of two 10 Ω resistors in parallel is:","5 Ω|20 Ω|10 Ω|100 Ω".split("|"),0,"1/R = 1/10 + 1/10 = 2/10, so R = 5 Ω. Two equal resistors in parallel give half the value.");
+add("Series and Parallel Connections","For resistors in parallel, the equivalent resistance is always:","Less than the smallest individual resistance|Greater than the largest individual resistance|Equal to the average|Equal to the sum".split("|"),0,"Adding a parallel path always reduces total resistance, making it less than any individual resistor.");
+add("Series and Parallel Connections","Two resistors of 6 Ω and 12 Ω are in parallel. The equivalent resistance is:","4 Ω|18 Ω|3 Ω|9 Ω".split("|"),0,"1/R = 1/6 + 1/12 = 2/12 + 1/12 = 3/12 → R = 4 Ω. Or use R = (R₁×R₂)/(R₁+R₂) = 72/18 = 4 Ω.");
+add("Series and Parallel Connections","In a series circuit, the total voltage is:","The sum of the voltages across each component|The same as across any single component|Always 12 V|The product of individual voltages".split("|"),0,"KVL: In series, the supply voltage equals the sum of all voltage drops across individual components.");
+add("Series and Parallel Connections","A 12 V battery is connected across two 6 Ω resistors in series. The current in the circuit is:","1 A|2 A|4 A|0.5 A".split("|"),0,"R_total = 6 + 6 = 12 Ω. I = V/R = 12/12 = 1 A.");
+add("Series and Parallel Connections","A 12 V battery is connected across two 6 Ω resistors in parallel. The total current from the battery is:","4 A|1 A|2 A|0.5 A".split("|"),0,"R_parallel = 6×6/(6+6) = 3 Ω. I = V/R = 12/3 = 4 A.");
+add("Series and Parallel Connections","Three 12 Ω resistors in parallel have an equivalent resistance of:","4 Ω|36 Ω|12 Ω|6 Ω".split("|"),0,"For n equal resistors R in parallel: R_eq = R/n = 12/3 = 4 Ω.");
+add("Series and Parallel Connections","If one resistor in a series circuit burns out (open circuit), the:","Entire circuit stops working|Other resistors still function|Current increases|Voltage increases".split("|"),0,"In series, a break anywhere stops all current flow since there is only one path.");
+add("Series and Parallel Connections","If one resistor in a parallel circuit burns out (open circuit), the:","Other branches continue to function|Entire circuit stops|Current in other branches changes|All other resistors burn out too".split("|"),0,"In parallel, each branch is independent. If one opens, the others still have a complete path and continue operating.");
+add("Series and Parallel Connections","A 4 Ω and 12 Ω resistor are in parallel. This combination is in series with an 8 Ω resistor. Total resistance is:","11 Ω|24 Ω|5 Ω|16 Ω".split("|"),0,"Parallel: R_p = (4×12)/(4+12) = 48/16 = 3 Ω. Series with 8 Ω: R_total = 3 + 8 = 11 Ω.");
+add("Series and Parallel Connections","In a voltage divider circuit with R₁ = 3 kΩ and R₂ = 7 kΩ connected to 10 V, the voltage across R₂ is:","7 V|3 V|10 V|5 V".split("|"),0,"V₂ = V × R₂/(R₁+R₂) = 10 × 7/10 = 7 V. The voltage divider formula.");
+add("Series and Parallel Connections","A 24 V battery drives current through a series combination of 3 Ω, 5 Ω, and 4 Ω. The voltage drop across the 5 Ω resistor is:","10 V|5 V|24 V|12 V".split("|"),0,"R_total = 12 Ω. I = 24/12 = 2 A. V₅ = IR = 2 × 5 = 10 V.");
+add("Series and Parallel Connections","Two resistors in series always have equivalent resistance that is:","Greater than either individual resistance|Less than either individual resistance|Equal to the smaller one|Equal to the average".split("|"),0,"R_series = R₁ + R₂ > R₁ and > R₂ (since both R values are positive).");
+add("Series and Parallel Connections","Five 100 Ω resistors are connected in parallel. The equivalent resistance is:","20 Ω|500 Ω|100 Ω|50 Ω".split("|"),0,"R_eq = 100/5 = 20 Ω for five equal resistors in parallel.");
+add("Series and Parallel Connections","A student connects a 2 Ω and 3 Ω resistor in parallel, then adds a 5 Ω resistor in series. The total resistance is:","6.2 Ω|10 Ω|3.33 Ω|1.2 Ω".split("|"),0,"R_parallel = (2×3)/(2+3) = 6/5 = 1.2 Ω. Total = 1.2 + 5 = 6.2 Ω.");
+add("Series and Parallel Connections","The current through a 3 Ω resistor in parallel with a 6 Ω resistor (total 12 V applied) is:","4 A through the 3 Ω resistor|2 A through the 3 Ω resistor|6 A through the 3 Ω resistor|12 A through the 3 Ω resistor".split("|"),0,"In parallel, voltage is the same: 12 V. I₃ = V/R = 12/3 = 4 A.");
+add("Series and Parallel Connections","When resistors are in parallel, which quantity is the same across all resistors?","Voltage|Current|Power|Resistance".split("|"),0,"Parallel components share the same two nodes, so voltage is identical across all of them.");
+add("Series and Parallel Connections","Kirchhoff's Voltage Law (KVL) states that:","The sum of all voltages around a closed loop is zero|Current is conserved at a junction|Power is always positive|Resistance is constant".split("|"),0,"KVL: ΣV = 0 around any closed loop. The sum of EMFs equals the sum of voltage drops.");
+add("Series and Parallel Connections","A 10 Ω, 20 Ω, and 20 Ω resistor are all in parallel. The equivalent resistance is:","5 Ω|50 Ω|16.67 Ω|10 Ω".split("|"),0,"1/R = 1/10 + 1/20 + 1/20 = 2/20 + 1/20 + 1/20 = 4/20 = 1/5. R = 5 Ω.");
+add("Series and Parallel Connections","In a series circuit with unequal resistors, the largest voltage drop occurs across:","The largest resistance|The smallest resistance|The middle resistance|All have equal voltage drops".split("|"),0,"V = IR. Since current is the same in series, the largest R gets the largest voltage drop.");
+add("Series and Parallel Connections","Kirchhoff's Current Law (KCL) states that:","The sum of currents entering a junction equals the sum leaving|Voltage is conserved around a loop|All currents in a circuit are equal|Resistance splits equally at junctions".split("|"),0,"KCL is based on conservation of charge: current in = current out at any junction.");
+
+// ===== ELECTRIC POWER (24 questions) =====
+add("Electric Power","Electric power is defined as:","The rate of doing electrical work or energy dissipation|The total energy used|The current times resistance|The charge times voltage".split("|"),0,"P = W/t = dW/dt. Power is the rate at which electrical energy is converted to other forms.");
+add("Electric Power","The SI unit of electric power is:","Watt (W)|Joule (J)|Volt-Ampere (VA)|Kilowatt-hour (kWh)".split("|"),0,"Power is measured in watts. 1 W = 1 J/s = 1 V × 1 A.");
+add("Electric Power","The formula P = IV gives power when:","Both voltage and current are known|Only voltage is known|Only resistance is known|None of the above".split("|"),0,"P = IV directly gives power as the product of current and voltage across a component.");
+add("Electric Power","A device operates at 240 V and draws 5 A. Its power consumption is:","1200 W|48 W|245 W|1.2 W".split("|"),0,"P = IV = 5 × 240 = 1200 W = 1.2 kW.");
+add("Electric Power","Which expression for power is NOT correct?","P = V²I|P = IV|P = I²R|P = V²/R".split("|"),0,"P = IV, P = I²R, and P = V²/R are all valid. P = V²I has incorrect dimensions and is not a valid power formula.");
+add("Electric Power","A 100 W bulb operates for 10 hours. The energy consumed is:","1 kWh|1000 kWh|10 kWh|0.1 kWh".split("|"),0,"Energy = P × t = 100 W × 10 h = 1000 Wh = 1 kWh.");
+add("Electric Power","A 60 W bulb and a 100 W bulb are connected in parallel to a 220 V supply. Which draws more current?","The 100 W bulb|The 60 W bulb|Both draw equal current|Neither draws current".split("|"),0,"In parallel, V is the same. P = IV → I = P/V. Higher power means higher current: I₁₀₀ = 100/220 > I₆₀ = 60/220.");
+add("Electric Power","The power dissipated in a 50 Ω resistor carrying 0.4 A is:","8 W|20 W|125 W|0.008 W".split("|"),0,"P = I²R = (0.4)² × 50 = 0.16 × 50 = 8 W.");
+add("Electric Power","If 10 V is applied across a 20 Ω resistor, the power dissipated is:","5 W|200 W|2 W|0.5 W".split("|"),0,"P = V²/R = 100/20 = 5 W.");
+add("Electric Power","One kilowatt-hour (kWh) is equal to:","3.6 × 10⁶ J|3600 J|1000 J|3.6 × 10³ J".split("|"),0,"1 kWh = 1000 W × 3600 s = 3,600,000 J = 3.6 × 10⁶ J.");
+add("Electric Power","A heater rated 2 kW operates for 3 hours. The energy consumed in joules is:","2.16 × 10⁷ J|6000 J|6 × 10⁶ J|2.16 × 10⁴ J".split("|"),0,"E = Pt = 2000 × (3 × 3600) = 2000 × 10800 = 2.16 × 10⁷ J.");
+add("Electric Power","Two resistors dissipate the same power. If R₁ = 4 Ω carries 3 A, and R₂ = 9 Ω, what current flows through R₂?","2 A|3 A|4 A|1 A".split("|"),0,"P₁ = I₁²R₁ = 9 × 4 = 36 W. P₂ = I₂²R₂ = I₂² × 9 = 36 → I₂² = 4 → I₂ = 2 A.");
+add("Electric Power","When a 60 W and 100 W bulb are in series on 220 V supply, which bulb glows brighter?","The 60 W bulb|The 100 W bulb|Both glow equally|Neither glows".split("|"),0,"In series, current is the same. P = I²R. The 60 W bulb has higher resistance (R = V²/P_rated), so it dissipates more power and glows brighter. This is counterintuitive!");
+add("Electric Power","The power rating of a device tells you:","The rate at which it converts electrical energy under normal operation|The total energy it can ever use|Its resistance|Its current".split("|"),0,"Power rating gives the rate of energy conversion at the rated voltage, measured in watts.");
+add("Electric Power","An electric kettle rated 2000 W at 240 V has resistance:","28.8 Ω|120 Ω|0.12 Ω|480000 Ω".split("|"),0,"R = V²/P = (240)²/2000 = 57600/2000 = 28.8 Ω.");
+add("Electric Power","If electricity costs ₦50 per kWh, the cost of running a 500 W device for 8 hours is:","₦200|₦400|₦4000|₦20".split("|"),0,"Energy = 0.5 kW × 8 h = 4 kWh. Cost = 4 × 50 = ₦200.");
+add("Electric Power","Doubling the current through a fixed resistance will increase the power by a factor of:","4|2|8|16".split("|"),0,"P = I²R. If I → 2I, P → (2I)²R = 4I²R = 4P. Power increases by a factor of 4.");
+add("Electric Power","A 12 V battery delivers 2 A. How much energy is delivered in 5 minutes?","7200 J|120 J|24 J|1440 J".split("|"),0,"P = IV = 24 W. E = Pt = 24 × 300 = 7200 J (5 min = 300 s).");
+add("Electric Power","The power dissipated in a circuit equals:","The energy dissipated per second|The voltage times resistance|The current times time|The force times distance".split("|"),0,"Power = Energy/Time. In electrical contexts, P = IV = I²R = V²/R.");
+add("Electric Power","A resistor has 5 V across it and dissipates 2.5 W. The current through it is:","0.5 A|2 A|12.5 A|0.2 A".split("|"),0,"P = IV → I = P/V = 2.5/5 = 0.5 A.");
+add("Electric Power","The maximum power transfer theorem states that maximum power is delivered to a load when:","Load resistance equals internal resistance|Load resistance is zero|Load resistance is infinite|Load resistance is twice the internal resistance".split("|"),0,"Maximum power transfer occurs when R_load = r (internal resistance). This is a key theorem in circuit analysis.");
+add("Electric Power","A device rated 500 W, 250 V is connected to a 125 V supply. The actual power consumed is approximately:","125 W|250 W|500 W|62.5 W".split("|"),0,"R = V²_rated/P_rated = 62500/500 = 125 Ω. At 125V: P = V²/R = 15625/125 = 125 W. Half voltage gives quarter power.");
+add("Electric Power","Three identical 60 W, 220 V bulbs in parallel consume total power of:","180 W|60 W|20 W|540 W".split("|"),0,"In parallel at rated voltage, each bulb operates at its rated power. Total = 3 × 60 = 180 W.");
+add("Electric Power","The unit kWh is a unit of:","Energy|Power|Voltage|Current".split("|"),0,"kWh = kilowatt × hour = power × time = energy. Despite having 'watt' in the name, it measures energy, not power.");
+
+// ===== JOULE'S LAW (22 questions) =====
+add("Joule's Law","Joule's Law of heating states that heat produced in a resistor is:","H = I²Rt|H = IRt|H = V²t|H = IVR".split("|"),0,"Joule's Law: H = I²Rt. Heat is proportional to the square of current, the resistance, and time.");
+add("Joule's Law","According to Joule's Law, if the current is doubled, the heat produced becomes:","4 times|2 times|8 times|Half".split("|"),0,"H ∝ I². Doubling I gives (2I)² = 4I², so heat increases by a factor of 4.");
+add("Joule's Law","A 20 Ω resistor carries 3 A for 5 minutes. The heat produced is:","54000 J|300 J|18000 J|900 J".split("|"),0,"H = I²Rt = 9 × 20 × 300 = 54000 J. (5 min = 300 s)");
+add("Joule's Law","Joule's Law is applicable to:","All types of conductors|Only semiconductors|Only superconductors|Only insulators".split("|"),0,"Joule heating occurs in any conductor with nonzero resistance carrying current, regardless of type.");
+add("Joule's Law","The heating element of an electric heater is typically made of:","Nichrome|Copper|Silver|Aluminum".split("|"),0,"Nichrome has high resistivity and can withstand high temperatures without oxidizing, making it ideal for heating elements.");
+add("Joule's Law","Joule's Law can also be written as:","H = V²t/R|H = V²Rt|H = IR²t|H = Vt/R²".split("|"),0,"Using V = IR: H = I²Rt = (V/R)²Rt = V²t/R. This form is useful when voltage is known.");
+add("Joule's Law","A 100 Ω resistor dissipates 400 J of heat in 4 seconds. The current through it is:","1 A|4 A|2 A|0.5 A".split("|"),0,"H = I²Rt → I² = H/(Rt) = 400/(100×4) = 1 → I = 1 A.");
+add("Joule's Law","Why are transmission lines operated at high voltage?","To reduce I²R losses|To increase current|Because high voltage is safer|To use thinner wires".split("|"),0,"P = IV is constant. Higher V means lower I. Since losses = I²R, lower current dramatically reduces heating losses.");
+add("Joule's Law","An electric fuse works on the principle of:","Joule heating — it melts when current exceeds a safe value|Electromagnetic induction|Coulomb's law|Capacitance".split("|"),0,"Excessive current causes I²R heating in the fuse wire until it melts, breaking the circuit. This is a direct application of Joule's law.");
+add("Joule's Law","If the resistance of a heating element is halved and the voltage remains the same, the heat produced:","Doubles|Halves|Quadruples|Remains the same".split("|"),0,"H = V²t/R. Halving R doubles H (at same voltage and time).");
+add("Joule's Law","How long will it take a 50 Ω resistor carrying 2 A to produce 20000 J of heat?","100 s|200 s|50 s|500 s".split("|"),0,"H = I²Rt → t = H/(I²R) = 20000/(4×50) = 20000/200 = 100 s.");
+add("Joule's Law","The SI unit of heat energy in Joule's Law is:","Joule (J)|Calorie (cal)|Watt (W)|Kelvin (K)".split("|"),0,"In SI, energy (including heat) is measured in joules. 1 calorie = 4.186 J.");
+add("Joule's Law","A wire of resistance 5 Ω carries 4 A for 10 seconds. The energy dissipated as heat is:","800 J|200 J|2000 J|80 J".split("|"),0,"H = I²Rt = 16 × 5 × 10 = 800 J.");
+add("Joule's Law","Joule's Law is a consequence of:","Conservation of energy — electrical energy converts to heat|Conservation of charge|Newton's third law|Faraday's law".split("|"),0,"Joule heating is the conversion of electrical energy into thermal energy in a resistor, following energy conservation.");
+add("Joule's Law","In Joule's Law H = I²Rt, if I is in amperes, R in ohms, and t in seconds, H is in:","Joules|Watts|Calories|Kilowatt-hours".split("|"),0,"A² × Ω × s = (C/s)² × (V/A) × s = (C²/s²)(V/A)(s) = C²V/(As) = CV = J. The result is in joules.");
+add("Joule's Law","An iron box rated 750 W is used for 2 hours. The heat energy produced is:","5.4 × 10⁶ J|1500 J|750 J|1.5 × 10⁶ J".split("|"),0,"H = Pt = 750 × 7200 = 5,400,000 = 5.4 × 10⁶ J. (2 hours = 7200 s)");
+add("Joule's Law","Nichrome is preferred for heating elements because:","It has high resistivity and high melting point|It has low resistance|It is a superconductor|It is the cheapest metal".split("|"),0,"Nichrome's high resistivity means more heat generation, and its high melting point and oxidation resistance mean it doesn't burn out easily.");
+add("Joule's Law","A 240 V heater has resistance 48 Ω. The heat produced per second is:","1200 J|11520 J|5 J|240 J".split("|"),0,"H/t = P = V²/R = 57600/48 = 1200 W = 1200 J/s.");
+add("Joule's Law","If a current of 10 A flows through a 2 Ω resistance for 1 minute, the heat generated is:","12000 J|200 J|1200 J|20 J".split("|"),0,"H = I²Rt = 100 × 2 × 60 = 12000 J.");
+add("Joule's Law","The practical application of Joule's heating does NOT include:","Refrigeration by direct Joule heating|Electric heaters|Electric irons|Electric fuses".split("|"),0,"Joule heating produces heat, not cooling. Refrigeration uses other principles (vapor compression, thermoelectric). Heaters, irons, and fuses all rely on Joule heating.");
+add("Joule's Law","Two wires A and B carry the same current. Wire A has twice the resistance of B. The ratio of heat produced in A to B is:","2:1|1:2|4:1|1:1".split("|"),0,"H = I²Rt. Same I and t, so H_A/H_B = R_A/R_B = 2R/R = 2:1.");
+add("Joule's Law","A 10 Ω and 20 Ω resistor are connected in series to a battery. The ratio of heat dissipated in them is:","1:2|2:1|1:4|4:1".split("|"),0,"In series, same current flows. H ∝ R (since H = I²Rt). Ratio = R₁:R₂ = 10:20 = 1:2.");
+
+// ===== EMF (23 questions) =====
+add("EMF","EMF (Electromotive Force) of a cell is:","The energy per unit charge provided by the cell to drive current through the circuit|The force on a charge inside the cell|The resistance of the cell|The current the cell produces".split("|"),0,"EMF (ε) is the work done per unit charge by the cell's internal mechanism (chemical, etc.) to move charge from − to + terminal inside.");
+add("EMF","The SI unit of EMF is:","Volt (V)|Newton (N)|Ampere (A)|Ohm (Ω)".split("|"),0,"EMF has the same unit as potential difference: volts (V). 1 V = 1 J/C.");
+add("EMF","EMF is measured when:","No current flows (open circuit)|Maximum current flows|The cell is fully discharged|The circuit has no resistance".split("|"),0,"True EMF is measured at open circuit (no current) because with current flowing, voltage drops across the internal resistance.");
+add("EMF","The terminal voltage of a cell is:","V = ε − Ir|V = ε + Ir|V = ε × Ir|V = ε / Ir".split("|"),0,"Terminal voltage = EMF minus the voltage drop across internal resistance: V = ε − Ir.");
+add("EMF","A cell with EMF 1.5 V and internal resistance 0.5 Ω delivers 1 A. The terminal voltage is:","1.0 V|2.0 V|1.5 V|0.5 V".split("|"),0,"V = ε − Ir = 1.5 − (1)(0.5) = 1.0 V.");
+add("EMF","Internal resistance of a cell causes:","A drop in terminal voltage when current flows|An increase in EMF|The cell to last longer|No effect on the circuit".split("|"),0,"Internal resistance r causes a voltage drop Ir inside the cell, reducing the terminal voltage below the EMF.");
+add("EMF","If the terminal voltage equals the EMF, the current must be:","Zero|Maximum|Infinite|Equal to the EMF".split("|"),0,"V = ε − Ir. If V = ε, then Ir = 0, meaning I = 0 (open circuit).");
+add("EMF","A battery has EMF 12 V and internal resistance 2 Ω. The maximum current it can deliver (short circuit) is:","6 A|12 A|24 A|2 A".split("|"),0,"Short circuit: V = 0, so ε = Ir → I = ε/r = 12/2 = 6 A. This is dangerous and should not be done in practice!");
+add("EMF","Two cells of EMF 1.5 V each connected in series give a total EMF of:","3.0 V|1.5 V|0.75 V|4.5 V".split("|"),0,"In series, EMFs add: ε_total = 1.5 + 1.5 = 3.0 V.");
+add("EMF","Two identical cells of EMF 2 V and internal resistance 1 Ω each in series drive current through a 3 Ω external resistance. The current is:","0.8 A|1.33 A|2 A|4 A".split("|"),0,"ε_total = 4 V, r_total = 2 Ω. I = ε/(R+r) = 4/(3+2) = 4/5 = 0.8 A.");
+add("EMF","Two identical cells of EMF 2 V and internal resistance 1 Ω each are connected in parallel across a 3 Ω resistor. The current through the resistor is approximately:","0.57 A|1 A|0.8 A|2 A".split("|"),0,"Parallel cells: ε_eq = 2 V, r_eq = 0.5 Ω. I = 2/(3+0.5) = 2/3.5 ≈ 0.57 A.");
+add("EMF","The purpose of the internal resistance in the equation V = ε − Ir is to account for:","Energy lost as heat inside the cell|External circuit resistance|Capacitance of the cell|Inductance of the wires".split("|"),0,"The internal resistance r converts some electrical energy to heat inside the cell, reducing what's available externally.");
+add("EMF","A cell of EMF 6 V and internal resistance 1 Ω is connected to a 5 Ω resistor. The power delivered to the external resistor is:","5 W|6 W|1 W|36 W".split("|"),0,"I = ε/(R+r) = 6/6 = 1 A. P = I²R = 1 × 5 = 5 W.");
+add("EMF","EMF is NOT a true force because:","It is energy per unit charge, not force per unit charge|It is measured in newtons|It acts only on protons|It exists only in vacuum".split("|"),0,"Despite its name, EMF is a misnomer — it's measured in volts (J/C), not newtons. It represents energy conversion, not a mechanical force.");
+add("EMF","A freshly charged cell has a higher terminal voltage than a nearly depleted cell because:","The internal resistance increases as the cell ages/depletes|The EMF of a depleted cell becomes infinite|External resistance changes|The wire resistance increases".split("|"),0,"As a cell depletes, chemical changes increase its internal resistance, causing a larger Ir drop and lower terminal voltage.");
+add("EMF","The efficiency of a cell delivering power is:","η = R/(R + r)|η = r/(R + r)|η = R × r|η = 1/Ir".split("|"),0,"Efficiency = Power delivered externally / Total power = I²R / I²(R+r) = R/(R+r).");
+add("EMF","A battery of EMF 9 V and internal resistance 0.5 Ω is connected to a load of 4.5 Ω. The terminal voltage is:","8.1 V|9 V|4.5 V|0.9 V".split("|"),0,"I = 9/5 = 1.8 A. V = ε − Ir = 9 − 1.8(0.5) = 9 − 0.9 = 8.1 V.");
+add("EMF","Three cells of 1.5 V and internal resistance 0.3 Ω each are in series with a 5.1 Ω resistor. The current is:","0.75 A|1.5 A|0.5 A|3 A".split("|"),0,"ε_total = 4.5 V, r_total = 0.9 Ω. I = 4.5/(5.1+0.9) = 4.5/6 = 0.75 A.");
+add("EMF","The open-circuit voltage of a battery is 12 V. When delivering 2 A, the terminal voltage is 11 V. The internal resistance is:","0.5 Ω|1 Ω|2 Ω|6 Ω".split("|"),0,"V = ε − Ir → 11 = 12 − 2r → r = 1/2 = 0.5 Ω.");
+add("EMF","When cells are connected in parallel, the equivalent EMF is:","Equal to the EMF of one cell (if identical)|The sum of all EMFs|Zero|Double the single cell EMF".split("|"),0,"Identical cells in parallel: ε_eq = ε (same as one cell). The advantage is lower internal resistance (r/n).");
+add("EMF","A dynamo is a device that converts:","Mechanical energy to electrical energy (produces EMF)|Electrical energy to heat|Chemical energy to light|Solar energy to current".split("|"),0,"A dynamo (generator) converts mechanical energy into electrical energy by electromagnetic induction, producing an EMF.");
+add("EMF","If a cell has EMF 3 V and internal resistance 1 Ω, the power dissipated internally when 1 A flows is:","1 W|3 W|9 W|0.5 W".split("|"),0,"P_internal = I²r = 1² × 1 = 1 W.");
+add("EMF","The lost voltage in a circuit with a battery is:","The voltage drop across the internal resistance (Ir)|The EMF of the battery|The terminal voltage|The total external voltage".split("|"),0,"'Lost voltage' = Ir = the portion of the EMF that doesn't reach the external circuit, dissipated as heat in the battery.");
+
+// ===== ADDITIONAL MIXED / TRICKY (fill to 260+) =====
+add("Electric Field","A hollow charged conducting sphere has an electric field inside that is:","Zero everywhere inside|Equal to the surface field|Proportional to the distance from center|Maximum at the center".split("|"),0,"By Gauss's law, a hollow conducting sphere has zero enclosed charge inside, so E = 0 everywhere inside.");
+add("Electric Potential","Two points A and B are at potentials 100 V and 40 V. The work done by the field in moving +5 μC from A to B is:","3 × 10⁻⁴ J|−3 × 10⁻⁴ J|7 × 10⁻⁴ J|0 J".split("|"),0,"W = q(V_A − V_B) = 5×10⁻⁶ × (100−40) = 5×10⁻⁶ × 60 = 3×10⁻⁴ J. Positive work means the field does the work.");
+add("Ohm's Law","A 2 kΩ and 3 kΩ resistor in series carry a total current of 2 mA. The supply voltage is:","10 V|6 V|5 V|1 V".split("|"),0,"R = 2000 + 3000 = 5000 Ω. V = IR = 0.002 × 5000 = 10 V.");
+add("Series and Parallel Connections","Four 8 Ω resistors are connected: two in series, and that combination in parallel with the other two in series. The total resistance is:","8 Ω|32 Ω|2 Ω|16 Ω".split("|"),0,"Each series pair = 16 Ω. Two 16 Ω in parallel = 16/2 = 8 Ω.");
+add("Electric Power","A motor draws 10 A from a 200 V supply and has efficiency 80%. The useful power output is:","1600 W|2000 W|2500 W|1000 W".split("|"),0,"P_input = IV = 2000 W. P_output = η × P_input = 0.8 × 2000 = 1600 W.");
+add("Joule's Law","Two resistors 10 Ω and 40 Ω are in parallel across a battery. The ratio of heat produced in them per unit time is:","4:1|1:4|1:2|2:1".split("|"),0,"In parallel, same V. H/t = V²/R. Ratio = (1/R₁):(1/R₂) = (1/10):(1/40) = 4:1. More heat in smaller resistor.");
+add("EMF","A battery of EMF 24 V and internal resistance 4 Ω delivers maximum power to a load of:","4 Ω|8 Ω|24 Ω|0 Ω".split("|"),0,"Maximum power transfer: R_load = r = 4 Ω.");
+add("Electric Field","The electric field at a distance of 1 m from a +1 nC charge is:","9 N/C|9000 N/C|0.009 N/C|90 N/C".split("|"),0,"E = kQ/r² = 9×10⁹ × 10⁻⁹ / 1 = 9 N/C.");
+add("Resistance","Two wires of same material and length have radii r and 2r. The ratio of their resistances is:","4:1|1:4|2:1|1:2".split("|"),0,"R = ρL/A. A = πr². Ratio = (1/r²):(1/4r²) = 4:1.");
+add("Electric Potential","What is 1 eV in joules?","1.6 × 10⁻¹⁹ J|1.6 × 10⁻¹⁶ J|1.6 × 10⁻²² J|9.1 × 10⁻³¹ J".split("|"),0,"1 eV = charge of electron × 1 V = 1.6×10⁻¹⁹ C × 1 V = 1.6×10⁻¹⁹ J.");
+add("Conductors and Electric Current","The resistance of an ideal voltmeter is:","Infinite|Zero|1 Ω|Equal to the circuit resistance".split("|"),0,"An ideal voltmeter should draw no current, requiring infinite resistance.");
+add("Electric Power","A 2 kW heater is connected to 200 V supply. The current drawn is:","10 A|100 A|1 A|400 A".split("|"),0,"I = P/V = 2000/200 = 10 A.");
+add("Ohm's Law","A conductor has resistance 5 Ω at 20°C. If the temperature coefficient is 0.004/°C, its resistance at 70°C is:","6 Ω|5.2 Ω|7 Ω|5.5 Ω".split("|"),0,"R = R₀(1 + αΔT) = 5(1 + 0.004 × 50) = 5(1.2) = 6 Ω.");
+add("Series and Parallel Connections","A Wheatstone bridge is balanced when:","R₁/R₂ = R₃/R₄|R₁ + R₂ = R₃ + R₄|R₁ × R₂ = R₃ × R₄|R₁ − R₂ = R₃ − R₄".split("|"),0,"A Wheatstone bridge is balanced (no current through galvanometer) when the ratio of resistances is equal: R₁/R₂ = R₃/R₄.");
+add("Electric Field","The work done in moving a charge of 2 C through a potential difference of 12 V is:","24 J|6 J|14 J|0.167 J".split("|"),0,"W = qV = 2 × 12 = 24 J.");
+add("Joule's Law","The filament of an incandescent bulb glows because of:","Joule heating — current through high resistance produces heat and light|Chemical reaction|Nuclear fission|Photoelectric effect".split("|"),0,"The tungsten filament has high resistance. I²R heating raises its temperature until it glows white-hot, emitting light.");
+add("Resistance","At constant temperature, a graph of current vs voltage for a metallic conductor is:","A straight line through the origin|A parabola|A hyperbola|An exponential curve".split("|"),0,"Ohmic behavior at constant temperature: I = V/R. Constant R means I vs V is linear through the origin.");
+add("Electric Power","The power dissipated in a 4 Ω resistor when 3 A flows through it is:","36 W|12 W|7 W|9 W".split("|"),0,"P = I²R = 9 × 4 = 36 W.");
+add("EMF","A cell of EMF 2 V and internal resistance 0.1 Ω is connected to a 1.9 Ω resistor. The current is:","1 A|10 A|0.5 A|2 A".split("|"),0,"I = ε/(R+r) = 2/(1.9+0.1) = 2/2 = 1 A.");
+add("Electric Field Lines","The electric flux through a closed surface enclosing a charge Q is:","Q/ε₀|Qε₀|Q²/ε₀|Q/ε₀²".split("|"),0,"Gauss's Law: Φ = Q/ε₀. The total electric flux through any closed surface equals the enclosed charge divided by ε₀.");
+add("Series and Parallel Connections","A 6 V battery with 1 Ω internal resistance is connected to three 2 Ω resistors in parallel. The current from the battery is:","3.6 A|2 A|6 A|1 A".split("|"),0,"R_parallel = 2/3 Ω. Total R = 2/3 + 1 = 5/3 Ω. I = 6/(5/3) = 18/5 = 3.6 A.");
+add("Conductors and Electric Current","A charge of 0.5 C passes through a wire every 0.1 s. The current is:","5 A|0.05 A|50 A|0.5 A".split("|"),0,"I = Q/t = 0.5/0.1 = 5 A.");
+add("Electric Potential","If V = 0 at infinity, the potential at distance r from a negative charge is:","Negative|Positive|Zero|Undefined".split("|"),0,"V = kQ/r. For Q < 0, V is negative at all finite distances from the charge.");
+add("Resistance","The reciprocal of resistivity is called:","Conductivity|Conductance|Permittivity|Permeability".split("|"),0,"Conductivity σ = 1/ρ, measured in S/m (siemens per meter). Conductance G = 1/R is different — it applies to a specific component.");
+add("Electric Power","If voltage is kept constant and resistance is doubled, the power:","Halves|Doubles|Quadruples|Remains the same".split("|"),0,"P = V²/R. Doubling R halves P. Students often confuse this with P = I²R (where doubling R increases P if I is constant).");
+add("Joule's Law","An electric shower rated 8 kW operates for 15 minutes. The energy used is:","7.2 × 10⁶ J|120000 J|8000 J|480000 J".split("|"),0,"E = Pt = 8000 × 900 = 7,200,000 = 7.2 × 10⁶ J. (15 min = 900 s)");
+add("EMF","The EMF of a cell depends on:","The chemical composition of the electrodes and electrolyte|The size of the cell|The amount of electrolyte|The thickness of the plates".split("|"),0,"EMF depends on the chemistry (materials of electrodes and electrolyte), not on the physical size. Size affects capacity (how long it lasts), not EMF.");
+add("Electric Field","The force between two charges is attractive when:","The charges have opposite signs|The charges have the same sign|Both charges are positive|Both charges are negative".split("|"),0,"Unlike charges attract (positive-negative). Like charges (both positive or both negative) repel.");
+add("Ohm's Law","A nichrome wire connected to a 12V battery draws 0.5 A. The wire's resistance is:","24 Ω|6 Ω|12.5 Ω|0.042 Ω".split("|"),0,"R = V/I = 12/0.5 = 24 Ω.");
+
+return Q;
+}
+
+const questionBank = generateQuestionBank();
+
+// ===== STATE =====
+let state = {
+currentExam: null,
+examHistory: [],
+topicStats: {},
+usedQuestionIds: [],
+timerInterval: null,
+startTime: null
+};
+
+// Load from localStorage
+function loadState(){
+try {
+const s = localStorage.getItem('physicsCBT');
+if(s){
+const parsed = JSON.parse(s);
+state.examHistory = parsed.examHistory || [];
+state.topicStats = parsed.topicStats || {};
+state.usedQuestionIds = parsed.usedQuestionIds || [];
+}
+} catch(e){}
+}
+
+function saveState(){
+try {
+localStorage.setItem('physicsCBT', JSON.stringify({
+examHistory: state.examHistory,
+topicStats: state.topicStats,
+usedQuestionIds: state.usedQuestionIds
+}));
+} catch(e){}
+}
+
+// ===== EXAM GENERATION =====
+function shuffleArray(arr){
+const a = [...arr];
+for(let i=a.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[a[i],a[j]]=[a[j],a[i]];
+}
+return a;
+}
+
+function selectQuestions(mode){
+let pool = [...questionBank];
+
+if(mode === 'weak'){
+const weakTopics = getWeakTopics();
+if(weakTopics.length === 0) {
+alert('No weak topics identified yet. Take an exam first!');
+return null;
+}
+pool = pool.filter(q => weakTopics.includes(q.topic));
+if(pool.length < 30){
+// supplement with all topics if not enough weak questions
+const needed = 30 - pool.length;
+const others = questionBank.filter(q => !weakTopics.includes(q.topic));
+pool = pool.concat(shuffleArray(others).slice(0, needed));
+}
+}
+
+// Prioritize unused questions
+const unused = pool.filter(q => !state.usedQuestionIds.includes(q.id));
+const used = pool.filter(q => state.usedQuestionIds.includes(q.id));
+
+let selected;
+if(unused.length >= 30){
+selected = shuffleArray(unused).slice(0, 30);
+} else {
+// Reset used tracking if most questions have been used
+if(unused.length < 10){
+state.usedQuestionIds = [];
+selected = shuffleArray(pool).slice(0, 30);
+} else {
+selected = [...shuffleArray(unused), ...shuffleArray(used)].slice(0, 30);
+}
+}
+
+// Mark as used
+selected.forEach(q => {
+if(!state.usedQuestionIds.includes(q.id)) state.usedQuestionIds.push(q.id);
+});
+
+// Shuffle question order
+selected = shuffleArray(selected);
+
+// Shuffle options for each question
+return selected.map(q => {
+const indices = [0,1,2,3];
+const shuffled = shuffleArray(indices);
+const newOptions = shuffled.map(i => q.options[i]);
+const newCorrect = shuffled.indexOf(q.correctIdx);
+return {
+...q,
+options: newOptions,
+correctIdx: newCorrect,
+userAnswer: -1,
+flagged: false
+};
+});
+}
+
+function getWeakTopics(){
+const stats = state.topicStats;
+const weak = [];
+for(const topic of TOPICS){
+if(stats[topic] && stats[topic].total >= 2){
+const pct = (stats[topic].correct / stats[topic].total) * 100;
+if(pct < 70) weak.push(topic);
+}
+}
+return weak;
+}
+
+// ===== SCREENS =====
+function showScreen(id){
+document.querySelectorAll('#app > div:not(.confirm-modal)').forEach(el => el.classList.add('hidden'));
+document.getElementById(id).classList.remove('hidden');
+window.scrollTo(0,0);
+}
+
+function refreshHome(){
+renderTopicBars();
+const weak = getWeakTopics();
+const btn1 = document.getElementById('btn-weak');
+const btn2 = document.getElementById('btn-weak2');
+if(weak.length === 0 && Object.keys(state.topicStats).length > 0){
+btn1.textContent = '✅ No Weak Areas — Practice All';
+if(btn2) btn2.textContent = '✅ No Weak Areas — Practice All';
+} else {
+btn1.textContent = '🔬 Practice Weak Areas';
+if(btn2) btn2.textContent = '🔬 Practice Weak Areas';
+}
+}
+
+// ===== EXAM =====
+function startExam(mode){
+const questions = selectQuestions(mode);
+if(!questions) return;
+
+state.currentExam = {
+mode,
+questions,
+currentIndex: 0,
+submitted: false
+};
+state.startTime = Date.now();
+
+// Start timer
+clearInterval(state.timerInterval);
+state.timerInterval = setInterval(updateTimer, 1000);
+
+showScreen('screen-exam');
+renderQuestion();
+renderDotNav();
+saveState();
+}
+
+function updateTimer(){
+if(!state.startTime) return;
+const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+const m = Math.floor(elapsed / 60).toString().padStart(2,'0');
+const s = (elapsed % 60).toString().padStart(2,'0');
+document.getElementById('timer').textContent = m + ':' + s;
+}
+
+function renderQuestion(){
+const exam = state.currentExam;
+if(!exam) return;
+const q = exam.questions[exam.currentIndex];
+const i = exam.currentIndex;
+const total = exam.questions.length;
+
+document.getElementById('q-counter').textContent = `Question ${i+1} of ${total}`;
+document.getElementById('exam-progress').style.width = ((i+1)/total*100) + '%';
+document.getElementById('q-text').textContent = q.question;
+
+const labels = ['A','B','C','D'];
+let html = '';
+q.options.forEach((opt, idx) => {
+const sel = q.userAnswer === idx ? ' selected' : '';
+html += `<div class="option${sel}" onclick="selectOption(${idx})">
+<span class="option-label">${labels[idx]}</span>
+<span>${opt}</span></div>`;
+});
+document.getElementById('q-options').innerHTML = html;
+
+document.getElementById('btn-prev').disabled = i === 0;
+document.getElementById('btn-next').classList.toggle('hidden', i === total - 1);
+document.getElementById('btn-submit').classList.toggle('hidden', i !== total - 1);
+document.getElementById('flag-btn').classList.toggle('flagged', q.flagged);
+
+updateDotNav();
+}
+
+function selectOption(idx){
+if(state.currentExam.submitted) return;
+state.currentExam.questions[state.currentExam.currentIndex].userAnswer = idx;
+renderQuestion();
+}
+
+function navQuestion(dir){
+const exam = state.currentExam;
+const newIdx = exam.currentIndex + dir;
+if(newIdx < 0 || newIdx >= exam.questions.length) return;
+exam.currentIndex = newIdx;
+renderQuestion();
+}
+
+function jumpToQuestion(idx){
+state.currentExam.currentIndex = idx;
+renderQuestion();
+}
+
+function toggleFlag(){
+const q = state.currentExam.questions[state.currentExam.currentIndex];
+q.flagged = !q.flagged;
+document.getElementById('flag-btn').classList.toggle('flagged', q.flagged);
+updateDotNav();
+}
+
+function renderDotNav(){
+const exam = state.currentExam;
+let html = '';
+exam.questions.forEach((q, i) => {
+html += `<div class="dot" id="dot-${i}" onclick="jumpToQuestion(${i})">${i+1}</div>`;
+});
+document.getElementById('dot-nav').innerHTML = html;
+updateDotNav();
+}
+
+function updateDotNav(){
+const exam = state.currentExam;
+exam.questions.forEach((q, i) => {
+const dot = document.getElementById('dot-' + i);
+if(!dot) return;
+dot.className = 'dot';
+if(q.userAnswer >= 0) dot.classList.add('answered');
+if(i === exam.currentIndex) dot.classList.add('current');
+if(q.flagged) dot.classList.add('flagged-dot');
+});
+}
+
+// ===== SUBMIT =====
+function confirmSubmit(){
+const answered = state.currentExam.questions.filter(q => q.userAnswer >= 0).length;
+const total = state.currentExam.questions.length;
+document.getElementById('modal-text').textContent = `You have answered ${answered} of ${total} questions.${answered < total ? ' Unanswered questions will be marked wrong.' : ''}`;
+document.getElementById('modal-confirm').classList.remove('hidden');
+}
+
+function hideModal(){
+document.getElementById('modal-confirm').classList.add('hidden');
+}
+
+function submitExam(){
+hideModal();
+clearInterval(state.timerInterval);
+
+const exam = state.currentExam;
+exam.submitted = true;
+
+const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+const m = Math.floor(elapsed/60).toString().padStart(2,'0');
+const s = (elapsed%60).toString().padStart(2,'0');
+const timeStr = m+':'+s;
+
+let correct = 0, wrong = 0, unanswered = 0;
+const topicResults = {};
+
+exam.questions.forEach(q => {
+if(!topicResults[q.topic]) topicResults[q.topic] = {correct:0, total:0};
+topicResults[q.topic].total++;
+
+if(q.userAnswer === -1){
+unanswered++;
+} else if(q.userAnswer === q.correctIdx){
+correct++;
+topicResults[q.topic].correct++;
+} else {
+wrong++;
+}
+
+// Update global topic stats
+if(!state.topicStats[q.topic]) state.topicStats[q.topic] = {correct:0, total:0};
+state.topicStats[q.topic].total++;
+if(q.userAnswer === q.correctIdx) state.topicStats[q.topic].correct++;
+});
+
+const score = correct;
+const pct = Math.round((score / exam.questions.length) * 100);
+let grade, gradeClass;
+if(pct >= 90) { grade = 'Excellent'; gradeClass = 'grade-excellent'; }
+else if(pct >= 70) { grade = 'Very Good'; gradeClass = 'grade-good'; }
+else if(pct >= 50) { grade = 'Average'; gradeClass = 'grade-average'; }
+else { grade = 'Poor — Keep Practicing!'; gradeClass = 'grade-poor'; }
+
+// Save to history
+state.examHistory.unshift({
+date: new Date().toLocaleString(),
+score, total: exam.questions.length, pct, grade, time: timeStr,
+mode: exam.mode
+});
+if(state.examHistory.length > 50) state.examHistory.pop();
+saveState();
+
+// Render results
+document.getElementById('res-score').textContent = score + '/' + exam.questions.length;
+document.getElementById('res-percent').textContent = pct + '%';
+const gradeEl = document.getElementById('res-grade');
+gradeEl.textContent = grade;
+gradeEl.className = 'grade ' + gradeClass;
+document.getElementById('res-correct').textContent = correct;
+document.getElementById('res-wrong').textContent = wrong;
+document.getElementById('res-unanswered').textContent = unanswered;
+document.getElementById('res-time').textContent = timeStr;
+
+// Topic breakdown
+let topicHTML = '';
+for(const topic of TOPICS){
+if(!topicResults[topic]) continue;
+const tr = topicResults[topic];
+const tpct = tr.total > 0 ? Math.round((tr.correct/tr.total)*100) : 0;
+const cls = tpct >= 80 ? 'strong' : tpct >= 50 ? 'medium' : 'weak';
+topicHTML += `<div class="topic-row">
+<span style="min-width:140px;font-weight:600">${topic}</span>
+<div class="topic-progress"><div class="topic-fill ${cls}" style="width:${tpct}%"></div></div>
+<span style="min-width:50px;text-align:right;font-weight:700">${tpct}%</span>
+</div>`;
+}
+document.getElementById('res-topics').innerHTML = topicHTML;
+
+showScreen('screen-result');
+}
+
+// ===== REVIEW =====
+function renderReview(){
+const exam = state.currentExam;
+if(!exam) return;
+const labels = ['A','B','C','D'];
+let html = '';
+const correct = exam.questions.filter(q=>q.userAnswer===q.correctIdx).length;
+document.getElementById('review-summary').textContent = `Score: ${correct}/${exam.questions.length}`;
+
+exam.questions.forEach((q, i) => {
+const isCorrect = q.userAnswer === q.correctIdx;
+const badge = isCorrect ? '<span class="badge badge-success">✓ Correct</span>' : (q.userAnswer === -1 ? '<span class="badge badge-warning">Not Answered</span>' : '<span class="badge badge-danger">✗ Wrong</span>');
+let optHTML = '';
+q.options.forEach((opt, idx) => {
+let cls = '';
+if(idx === q.correctIdx) cls = ' correct';
+else if(idx === q.userAnswer && !isCorrect) cls = ' wrong';
+optHTML += `<div class="option${cls}" style="cursor:default;padding:10px 14px">
+<span class="option-label">${labels[idx]}</span>
+<span>${opt}</span></div>`;
+});
+
+let explHTML = `<div class="explanation-box${q.explanation && q.explanation.includes('=') ? ' has-formula' : ''}">
+<strong>Explanation:</strong> ${q.explanation}</div>`;
+
+if(!isCorrect && q.userAnswer >= 0){
+explHTML += `<div class="wrong-explanation"><strong>Your answer (${labels[q.userAnswer]}):</strong> "${q.options[q.userAnswer]}" — This is incorrect. The correct answer is <strong>${labels[q.correctIdx]}: ${q.options[q.correctIdx]}</strong>.</div>`;
+}
+
+html += `<div class="card review-question">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+<strong>Q${i+1}.</strong> ${badge}
+<span class="badge" style="background:#f0f4ff;color:var(--primary)">${q.topic}</span>
+</div>
+<div class="question-text" style="font-size:1rem">${q.question}</div>
+<div class="options" style="gap:6px">${optHTML}</div>
+${explHTML}
+</div>`;
+});
+
+document.getElementById('review-list').innerHTML = html;
+}
+
+// Override showScreen to trigger review rendering
+const origShowScreen = showScreen;
+showScreen = function(id){
+origShowScreen(id);
+if(id === 'screen-review') renderReview();
+if(id === 'screen-history') renderHistory();
+};
+
+// ===== TOPIC BARS =====
+function renderTopicBars(){
+const stats = state.topicStats;
+let html = '';
+if(Object.keys(stats).length === 0){
+html = '<p style="color:var(--text-light);font-size:.9rem">Take an exam to see your topic performance.</p>';
+} else {
+for(const topic of TOPICS){
+const s = stats[topic];
+if(!s || s.total === 0) continue;
+const pct = Math.round((s.correct/s.total)*100);
+const cls = pct >= 80 ? 'strong' : pct >= 50 ? 'medium' : 'weak';
+html += `<div class="topic-row">
+<span style="min-width:130px;font-size:.85rem;font-weight:600">${topic}</span>
+<div class="topic-progress"><div class="topic-fill ${cls}" style="width:${pct}%"></div></div>
+<span style="min-width:44px;text-align:right;font-weight:700;font-size:.85rem">${pct}%</span>
+</div>`;
+}
+}
+document.getElementById('topic-bars').innerHTML = html;
+}
+
+// ===== HISTORY =====
+function renderHistory(){
+const h = state.examHistory;
+if(h.length === 0){
+document.getElementById('history-list').innerHTML = '<p style="color:var(--text-light)">No exams taken yet.</p>';
+return;
+}
+let html = '';
+h.forEach((item, i) => {
+const modeLabel = item.mode === 'weak' ? '🔬 Weak Areas' : '🎯 Full Exam';
+const gradeClass = item.pct >= 90 ? 'badge-success' : item.pct >= 70 ? 'badge-success' : item.pct >= 50 ? 'badge-warning' : 'badge-danger';
+html += `<div class="history-item">
+<div>
+<strong>${modeLabel}</strong><br>
+<small style="color:var(--text-light)">${item.date}</small>
+</div>
+<div style="text-align:right">
+<strong>${item.score}/${item.total}</strong> (${item.pct}%)<br>
+<span class="badge ${gradeClass}">${item.grade}</span>
+<small style="color:var(--text-light)">⏱${item.time}</small>
+</div>
+</div>`;
+});
+document.getElementById('history-list').innerHTML = html;
+}
+
+function clearHistory(){
+if(!confirm('Clear all exam history and topic stats?')) return;
+state.examHistory = [];
+state.topicStats = {};
+state.usedQuestionIds = [];
+saveState();
+renderHistory();
+refreshHome();
+}
+
+// ===== INIT =====
+loadState();
+refreshHome();
+</script>
+</body>
+</html>
