@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physics CBT Simulator - Electricity & Magnetism</title>
+<style>
+:root{--bg:#f8fafc;--bg2:#e2e8f0;--card:#fff;--text:#0f172a;--text2:#475569;--primary:#2563eb;--primary-dark:#1d4ed8;--success:#16a34a;--danger:#dc2626;--warning:#f59e0b;--accent:#7c3aed;--border:#cbd5e1;--shadow:0 4px 6px -1px rgb(0 0 0/.1);--radius:12px}
+[data-theme="dark"]{--bg:#0f172a;--bg2:#1e293b;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--border:#334155;--shadow:0 4px 6px -1px rgb(0 0 0/.4)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;transition:background .3s,color .3s}
+.container{max-width:900px;margin:0 auto;padding:16px}
+.header{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:2px solid var(--primary);margin-bottom:16px}
+.logo{font-size:1.3rem;font-weight:800;color:var(--primary);display:flex;align-items:center;gap:8px}
+.header-actions{display:flex;gap:8px;align-items:center}
+.theme-toggle{background:var(--bg2);border:none;padding:8px 12px;border-radius:8px;cursor:pointer;font-size:1.1rem;transition:all .2s}
+.theme-toggle:hover{background:var(--border)}
+.card{background:var(--card);border-radius:var(--radius);padding:24px;margin:16px 0;box-shadow:var(--shadow);border:1px solid var(--border)}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 24px;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s;gap:8px;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-warning{background:var(--warning);color:#fff}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}
+.btn-ghost{background:var(--bg2);color:var(--text)}
+.btn-sm{padding:8px 16px;font-size:.875rem}
+.btn-lg{padding:16px 32px;font-size:1.1rem}
+.btn-block{width:100%;display:flex}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.progress-bar{background:var(--bg2);border-radius:99px;height:10px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:99px;transition:width .4s}
+.exam-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+.q-num{font-size:1rem;font-weight:700;color:var(--primary)}
+.timer{font-size:1.1rem;font-weight:700;font-family:monospace;background:var(--bg2);padding:6px 14px;border-radius:8px}
+.q-text{font-size:1.15rem;font-weight:600;margin:20px 0;line-height:1.7}
+.options{display:flex;flex-direction:column;gap:10px;margin:16px 0}
+.option{display:flex;align-items:flex-start;gap:14px;padding:16px;border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;font-size:1rem}
+.option:hover{border-color:var(--primary);background:rgba(37,99,235,.05)}
+.option.selected{border-color:var(--primary);background:rgba(37,99,235,.1)}
+.option.correct{border-color:var(--success);background:rgba(22,163,74,.1)}
+.option.wrong{border-color:var(--danger);background:rgba(220,38,38,.1)}
+.option-label{min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--bg2);font-weight:700;font-size:.9rem;flex-shrink:0;transition:all .2s}
+.option.selected .option-label{background:var(--primary);color:#fff}
+.option.correct .option-label{background:var(--success);color:#fff}
+.option.wrong .option-label{background:var(--danger);color:#fff}
+.nav-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.nav-row .btn{flex:1;min-width:100px}
+.q-nav{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0;justify-content:center}
+.q-dot{width:36px;height:36px;border-radius:8px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;background:var(--card)}
+.q-dot:hover{border-color:var(--primary)}
+.q-dot.answered{background:var(--primary);color:#fff;border-color:var(--primary)}
+.q-dot.flagged{border-color:var(--warning);box-shadow:0 0 0 2px var(--warning)}
+.q-dot.current{box-shadow:0 0 0 3px var(--accent)}
+.q-dot.skipped{background:var(--bg2)}
+.flag-btn{background:none;border:none;font-size:1.4rem;cursor:pointer;opacity:.4;transition:all .2s;padding:4px}
+.flag-btn:hover,.flag-btn.active{opacity:1}
+.flag-btn.active{color:var(--warning)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.stat-card{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;border-radius:12px;padding:20px;text-align:center}
+.stat-card.success{background:linear-gradient(135deg,#16a34a,#22c55e)}
+.stat-card.danger{background:linear-gradient(135deg,#dc2626,#f87171)}
+.stat-card.warning{background:linear-gradient(135deg,#f59e0b,#fbbf24)}
+.stat-card.info{background:linear-gradient(135deg,#0ea5e9,#38bdf8)}
+.stat-value{font-size:2.2rem;font-weight:800}
+.stat-label{font-size:.85rem;opacity:.9;margin-top:4px}
+.score-big{font-size:4rem;font-weight:900;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.grade{display:inline-block;padding:8px 24px;border-radius:99px;font-weight:700;font-size:1.1rem;margin-top:8px}
+.grade-a{background:#dcfce7;color:#166534}
+.grade-b{background:#dbeafe;color:#1e40af}
+.grade-c{background:#fef3c7;color:#92400e}
+.grade-f{background:#fee2e2;color:#991b1b}
+.topic-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.topic-row:last-child{border-bottom:none}
+.topic-name{min-width:160px;font-weight:600;font-size:.9rem}
+.topic-bar{flex:1;background:var(--bg2);border-radius:99px;height:12px;overflow:hidden}
+.topic-fill{height:100%;border-radius:99px}
+.topic-fill.strong{background:var(--success)}
+.topic-fill.medium{background:var(--warning)}
+.topic-fill.weak{background:var(--danger)}
+.topic-pct{min-width:50px;text-align:right;font-weight:700;font-size:.9rem}
+.explanation{margin-top:16px;padding:16px;background:rgba(22,163,74,.1);border-left:4px solid var(--success);border-radius:0 8px 8px 0}
+.explanation.formula{background:rgba(245,158,11,.1);border-left-color:var(--warning)}
+.explanation h4{margin-bottom:8px;color:var(--success)}
+.wrong-exp{margin-top:10px;padding:12px;background:rgba(220,38,38,.08);border-left:4px solid var(--danger);border-radius:0 8px 8px 0;font-size:.9rem}
+.review-q{padding:20px 0;border-bottom:1px solid var(--border)}
+.review-q:last-child{border-bottom:none}
+.badge{display:inline-block;padding:4px 12px;border-radius:99px;font-size:.75rem;font-weight:700}
+.badge-success{background:#dcfce7;color:#166534}
+.badge-danger{background:#fee2e2;color:#991b1b}
+.badge-warning{background:#fef3c7;color:#92400e}
+.badge-info{background:#dbeafe;color:#1e40af}
+.badge-topic{background:var(--bg2);color:var(--text2)}
+.encourage{text-align:center;padding:20px;background:linear-gradient(135deg,rgba(37,99,235,.1),rgba(124,58,237,.1));border-radius:12px;margin:16px 0;font-size:1.1rem;font-weight:600}
+.tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid var(--border);padding-bottom:4px}
+.tab{padding:10px 20px;border:none;background:none;font-size:.95rem;font-weight:600;color:var(--text2);cursor:pointer;border-radius:8px 8px 0 0;transition:all .2s}
+.tab:hover{background:var(--bg2)}
+.tab.active{color:var(--primary);background:var(--bg2)}
+.history-item{display:flex;justify-content:space-between;align-items:center;padding:14px;border-bottom:1px solid var(--border);gap:12px}
+.history-item:last-child{border-bottom:none}
+.shortcuts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;font-size:.9rem}
+.shortcut{display:flex;justify-content:space-between;padding:8px;background:var(--bg2);border-radius:6px}
+.shortcut kbd{background:var(--card);padding:2px 8px;border-radius:4px;font-family:monospace;border:1px solid var(--border)}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:999;padding:16px;opacity:0;visibility:hidden;transition:all .3s}
+.modal.show{opacity:1;visibility:visible}
+.modal-box{background:var(--card);border-radius:16px;padding:30px;max-width:450px;width:100%;text-align:center;transform:scale(.9);transition:transform .3s}
+.modal.show .modal-box{transform:scale(1)}
+.modal h3{margin-bottom:12px;font-size:1.3rem}
+.modal p{color:var(--text2);margin-bottom:20px}
+.modal-actions{display:flex;gap:12px;justify-content:center}
+.hidden{display:none!important}
+.text-center{text-align:center}
+.text-muted{color:var(--text2)}
+.mt-4{margin-top:16px}
+.mb-4{margin-bottom:16px}
+@media(max-width:640px){
+.container{padding:10px}
+.card{padding:16px;margin:10px 0}
+.header{flex-direction:column;gap:12px;text-align:center}
+.q-text{font-size:1rem}
+.btn{padding:10px 16px;font-size:.9rem}
+.score-big{font-size:3rem}
+.stat-grid{grid-template-columns:1fr 1fr}
+.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+.nav-row{flex-direction:column}
+.nav-row .btn{min-width:auto}
+.q-dot{width:32px;height:32px;font-size:.7rem}
+.topic-name{min-width:100px;font-size:.8rem}
+}
+</style>
+</head>
+<body>
+<div class="container" id="app">
+
+<!-- HOME SCREEN -->
+<div id="screen-home">
+<div class="header">
+<div class="logo">⚡ Physics CBT Simulator</div>
+<div class="header-actions">
+<button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌓</button>
+<button class="btn btn-sm btn-ghost" onclick="showScreen('screen-stats')">📊 Stats</button>
+</div>
+</div>
+
+<div class="card">
+<h2 style="margin-bottom:8px">Electricity & Magnetism</h2>
+<p class="text-muted mb-4">First-year University Physics CBT Practice. Each exam contains 20 randomly selected questions from a bank of 400+ questions.</p>
+<div class="grid-2 mb-4">
+<button class="btn btn-primary btn-lg btn-block" onclick="startExam('random')">🎯 Start Exam</button>
+<button class="btn btn-accent btn-lg btn-block" onclick="startExam('weak')">🔬 Weak Areas</button>
+</div>
+<div class="grid-3">
+<button class="btn btn-ghost btn-block" onclick="startExam('spaced')">🧠 Smart Review</button>
+<button class="btn btn-ghost btn-block" onclick="showScreen('screen-stats')">📈 Statistics</button>
+<button class="btn btn-ghost btn-block" onclick="showScreen('screen-help')">❓ Help</button>
+</div>
+</div>
+
+<div class="card">
+<h3 style="margin-bottom:12px">📚 Topic Performance</h3>
+<div id="home-topics"><p class="text-muted">Complete an exam to see your performance.</p></div>
+</div>
+
+<div class="card">
+<h3 style="margin-bottom:8px">Recent Activity</h3>
+<div id="home-recent"><p class="text-muted">No exams taken yet.</p></div>
+</div>
+</div>
+
+<!-- EXAM SCREEN -->
+<div id="screen-exam" class="hidden">
+<div class="card" style="padding:16px">
+<div class="exam-header">
+<span class="q-num" id="q-num">Question 1 of 20</span>
+<div style="display:flex;gap:12px;align-items:center">
+<button class="flag-btn" id="flag-btn" onclick="toggleFlag()" title="Flag for Review (F)">🚩</button>
+<span class="timer" id="timer">00:00</span>
+</div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress" style="width:5%"></div></div>
+<div class="q-nav" id="q-nav"></div>
+</div>
+
+<div class="card">
+<div class="badge badge-topic" id="q-topic">Topic</div>
+<div class="q-text" id="q-text">Question text goes here...</div>
+<div class="options" id="q-options"></div>
+</div>
+
+<div class="nav-row">
+<button class="btn btn-ghost" id="btn-prev" onclick="navQ(-1)">← Previous</button>
+<button class="btn btn-warning" onclick="skipQuestion()">Skip</button>
+<button class="btn btn-primary" id="btn-next" onclick="navQ(1)">Next →</button>
+<button class="btn btn-danger" id="btn-submit" onclick="confirmSubmit()">Submit Exam</button>
+</div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="screen-result" class="hidden">
+<div class="header">
+<div class="logo">📋 Exam Results</div>
+<div class="header-actions">
+<button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+</div>
+</div>
+
+<div class="card text-center">
+<div class="score-big" id="res-score">18/20</div>
+<div style="font-size:1.5rem;color:var(--text2)" id="res-pct">90%</div>
+<div class="grade grade-a" id="res-grade">Excellent</div>
+<div class="encourage" id="res-msg">Great job! Keep up the momentum!</div>
+</div>
+
+<div class="stat-grid">
+<div class="stat-card success"><div class="stat-value" id="res-correct">18</div><div class="stat-label">Correct</div></div>
+<div class="stat-card danger"><div class="stat-value" id="res-wrong">1</div><div class="stat-label">Wrong</div></div>
+<div class="stat-card warning"><div class="stat-value" id="res-skipped">1</div><div class="stat-label">Skipped</div></div>
+<div class="stat-card info"><div class="stat-value" id="res-time">--:--</div><div class="stat-label">Time</div></div>
+</div>
+
+<div class="card">
+<h3 style="margin-bottom:12px">Topic Breakdown</h3>
+<div id="res-topics"></div>
+</div>
+
+<div class="grid-2 mt-4">
+<button class="btn btn-primary btn-block" onclick="showScreen('screen-review')">📖 Review Answers</button>
+<button class="btn btn-accent btn-block" onclick="startExam('weak')">🔬 Practice Weak Areas</button>
+</div>
+<div class="grid-2 mt-4">
+<button class="btn btn-ghost btn-block" onclick="startExam('random')">🔄 New Exam</button>
+<button class="btn btn-outline btn-block" onclick="goHome()">🏠 Home</button>
+</div>
+</div>
+
+<!-- REVIEW SCREEN -->
+<div id="screen-review" class="hidden">
+<div class="header">
+<div class="logo">📖 Answer Review</div>
+<div class="header-actions">
+<button class="btn btn-sm btn-ghost" onclick="showScreen('screen-result')">← Back</button>
+</div>
+</div>
+<div id="review-list"></div>
+<div class="mt-4 text-center">
+<button class="btn btn-outline" onclick="showScreen('screen-result')">← Back to Results</button>
+<button class="btn btn-primary" onclick="goHome()">🏠 Home</button>
+</div>
+</div>
+
+<!-- STATS SCREEN -->
+<div id="screen-stats" class="hidden">
+<div class="header">
+<div class="logo">📊 Statistics</div>
+<div class="header-actions">
+<button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+<button class="btn btn-sm btn-ghost" onclick="goHome()">🏠 Home</button>
+</div>
+</div>
+
+<div class="tabs">
+<button class="tab active" onclick="switchTab(this,'stats-overview')">Overview</button>
+<button class="tab" onclick="switchTab(this,'stats-topics')">Topics</button>
+<button class="tab" onclick="switchTab(this,'stats-history')">History</button>
+</div>
+
+<div id="stats-overview" class="card">
+<div class="stat-grid mb-4">
+<div class="stat-card"><div class="stat-value" id="stat-total">0</div><div class="stat-label">Exams Taken</div></div>
+<div class="stat-card success"><div class="stat-value" id="stat-avg">0%</div><div class="stat-label">Average Score</div></div>
+<div class="stat-card info"><div class="stat-value" id="stat-qs">0</div><div class="stat-label">Questions Answered</div></div>
+<div class="stat-card warning"><div class="stat-value" id="stat-streak">0</div><div class="stat-label">Best Streak</div></div>
+</div>
+<div id="stats-weak-topics"></div>
+</div>
+
+<div id="stats-topics" class="card hidden">
+<h3 style="margin-bottom:16px">Performance by Topic</h3>
+<div id="stats-topic-list"></div>
+</div>
+
+<div id="stats-history" class="card hidden">
+<h3 style="margin-bottom:16px">Exam History</h3>
+<div id="stats-history-list"></div>
+<button class="btn btn-danger btn-sm mt-4" onclick="clearAllData()">🗑️ Clear All Data</button>
+</div>
+</div>
+
+<!-- HELP SCREEN -->
+<div id="screen-help" class="hidden">
+<div class="header">
+<div class="logo">❓ Help</div>
+<div class="header-actions">
+<button class="btn btn-sm btn-ghost" onclick="goHome()">🏠 Home</button>
+</div>
+</div>
+
+<div class="card">
+<h3 style="margin-bottom:12px">⌨️ Keyboard Shortcuts</h3>
+<div class="shortcuts">
+<div class="shortcut"><span>Next Question</span><kbd>→</kbd> or <kbd>N</kbd></div>
+<div class="shortcut"><span>Previous Question</span><kbd>←</kbd> or <kbd>P</kbd></div>
+<div class="shortcut"><span>Select Option A</span><kbd>A</kbd> or <kbd>1</kbd></div>
+<div class="shortcut"><span>Select Option B</span><kbd>B</kbd> or <kbd>2</kbd></div>
+<div class="shortcut"><span>Select Option C</span><kbd>C</kbd> or <kbd>3</kbd></div>
+<div class="shortcut"><span>Select Option D</span><kbd>D</kbd> or <kbd>4</kbd></div>
+<div class="shortcut"><span>Flag Question</span><kbd>F</kbd></div>
+<div class="shortcut"><span>Skip Question</span><kbd>S</kbd></div>
+<div class="shortcut"><span>Submit Exam</span><kbd>Enter</kbd> (on last Q)</div>
+</div>
+</div>
+
+<div class="card">
+<h3 style="margin-bottom:12px">📚 Topics Covered</h3>
+<ul style="padding-left:20px;color:var(--text2)">
+<li>Electric Field & Electric Force</li>
+<li>Electric Field Lines</li>
+<li>Electric Potential & Work</li>
+<li>Conductors, Current & Resistance</li>
+<li>Capacitors & Dielectrics</li>
+<li>Magnetism & Electromagnetic Induction</li>
+<li>Inductance</li>
+</ul>
+</div>
+
+<div class="card">
+<h3 style="margin-bottom:12px">🎯 Exam Modes</h3>
+<p class="text-muted"><strong>Start Exam:</strong> Random 20 questions from entire bank.</p>
+<p class="text-muted"><strong>Weak Areas:</strong> Focus on topics where you score below 70%.</p>
+<p class="text-muted"><strong>Smart Review:</strong> Spaced repetition — questions you've missed appear more often.</p>
+</div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal" id="modal-confirm">
+<div class="modal-box">
+<h3>Submit Exam?</h3>
+<p id="modal-msg">You have answered 18 of 20 questions.</p>
+<div class="modal-actions">
+<button class="btn btn-ghost" onclick="hideModal()">Cancel</button>
+<button class="btn btn-danger" onclick="submitExam()">Submit</button>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+// ========== TOPICS ==========
+const TOPICS=["Electric Field","Electric Field Lines","Electric Potential","Conductors and Resistance","Capacitors","Magnetism","Inductance"];
+
+// ========== QUESTION BANK ==========
+function generateQuestionBank(){
+const Q=[];
+let id=0;
+function add(topic,question,options,correctIdx,explanation,hasFormula=false){
+Q.push({id:id++,topic,question,options:[...options],correctIdx,explanation,hasFormula,missCount:0,lastSeen:0});
+}
+
+// ===== ELECTRIC FIELD (55 questions) =====
+add("Electric Field","The electric field at a point is defined as:","Force per unit positive test charge|Force per unit negative charge|Energy per unit charge|Work done per unit distance".split("|"),0,"Electric field E = F/q₀ where q₀ is a small positive test charge. It represents force per unit positive charge.");
+add("Electric Field","The SI unit of electric field is:","N/C or V/m|J/C|C/m|N·m".split("|"),0,"E = F/q gives N/C. Also E = -dV/dr gives V/m. Both are equivalent.");
+add("Electric Field","Which statement about electric field is correct?","It is a vector quantity|It is a scalar quantity|It has no direction|It equals potential".split("|"),0,"Electric field has both magnitude and direction, making it a vector.");
+add("Electric Field","The electric field due to a point charge Q at distance r is:","E = kQ/r²|E = kQ/r|E = kQ²/r|E = kQr".split("|"),0,"Coulomb's law for field: E = kQ/r², where k = 9×10⁹ N·m²/C².",true);
+add("Electric Field","If the distance from a point charge is doubled, the electric field:","Decreases to one-quarter|Decreases to one-half|Doubles|Remains the same".split("|"),0,"E ∝ 1/r². Doubling r gives E/4.");
+add("Electric Field","The direction of electric field at a point is:","Direction of force on a positive test charge|Direction of force on a negative charge|Always toward the source|Random".split("|"),0,"By convention, E points in the direction a positive charge would be pushed.");
+add("Electric Field","Two charges +Q and -Q separated by distance d form:","An electric dipole|A monopole|A quadrupole|A neutral system with no field".split("|"),0,"Two equal and opposite charges constitute an electric dipole.");
+add("Electric Field","The electric dipole moment is defined as:","p = qd (charge × separation)|p = q/d|p = q²d|p = d/q".split("|"),0,"Dipole moment p = qd, where q is the charge magnitude and d is the separation.",true);
+add("Electric Field","The SI unit of electric dipole moment is:","C·m|C/m|N·m|J/C".split("|"),0,"p = qd gives units of Coulomb × meter = C·m.");
+add("Electric Field","The torque on a dipole in a uniform electric field is:","τ = pE sin θ|τ = pE cos θ|τ = pE/sin θ|τ = p/E".split("|"),0,"Torque τ = p × E = pE sin θ, maximum when perpendicular to field.",true);
+add("Electric Field","When is the torque on a dipole in a uniform field maximum?","When dipole is perpendicular to the field|When dipole is parallel to the field|When dipole is anti-parallel|At 45 degrees".split("|"),0,"τ = pE sin θ is maximum when θ = 90° (perpendicular).");
+add("Electric Field","The potential energy of a dipole in an electric field is:","U = -pE cos θ|U = pE cos θ|U = pE sin θ|U = -pE sin θ".split("|"),0,"U = -p·E = -pE cos θ. Minimum (most stable) when parallel to field.",true);
+add("Electric Field","A dipole is in stable equilibrium when:","Aligned parallel to the field|Aligned perpendicular to the field|At 45° to the field|It is never stable".split("|"),0,"At θ = 0° (parallel), U = -pE is minimum, so it's stable equilibrium.");
+add("Electric Field","The electric field on the axis of a dipole at large distance varies as:","1/r³|1/r²|1/r|1/r⁴".split("|"),0,"On the axis of a dipole, E ∝ 1/r³ at large distances.");
+add("Electric Field","The superposition principle for electric fields states that:","Net field is the vector sum of individual fields|Fields multiply together|Only the strongest field matters|Fields cancel out".split("|"),0,"Superposition: E_net = E₁ + E₂ + ... (vector addition).");
+add("Electric Field","The electric field inside a charged conducting sphere is:","Zero|Maximum|Equal to surface field|Proportional to radius".split("|"),0,"Inside a conductor in electrostatic equilibrium, E = 0.");
+add("Electric Field","Electric field has the same units as:","Potential gradient|Current density|Charge density|Resistance".split("|"),0,"E = -dV/dr, so E has units of V/m, same as potential gradient.");
+add("Electric Field","Which correctly describes electric force between two charges?","Like charges repel, unlike charges attract|Like charges attract|All charges repel|Charges don't interact".split("|"),0,"Fundamental principle: like charges repel, unlike charges attract.");
+add("Electric Field","Coulomb's constant k equals:","9 × 10⁹ N·m²/C²|8.85 × 10⁻¹² F/m|6.67 × 10⁻¹¹ N·m²/kg²|1.6 × 10⁻¹⁹ C".split("|"),0,"k = 1/(4πε₀) ≈ 9 × 10⁹ N·m²/C².");
+add("Electric Field","The force between two 1 μC charges separated by 1 m is:","9 × 10⁻³ N|9 N|9 × 10³ N|9 × 10⁻⁶ N".split("|"),0,"F = kq₁q₂/r² = 9×10⁹ × (10⁻⁶)² / 1 = 9×10⁻³ N.",true);
+add("Electric Field","Electric field due to a uniformly charged ring at its center is:","Zero|Maximum|Equal to kQ/R²|Infinite".split("|"),0,"By symmetry, all field components cancel at the center of a ring.");
+add("Electric Field","On the axis of a charged ring, the field is maximum at distance:","x = R/√2 from center|At the center|At x = R|At infinity".split("|"),0,"The axial field of a ring is maximum at x = R/√2.");
+add("Electric Field","A proton in an electric field pointing east accelerates:","East|West|North|It doesn't move".split("|"),0,"Positive charges accelerate in the direction of E.");
+add("Electric Field","An electron in an electric field pointing north accelerates:","South|North|East|It doesn't move".split("|"),0,"Negative charges accelerate opposite to E direction.");
+add("Electric Field","The electric field between parallel plates with opposite charges is:","Uniform|Zero|Radial|Circular".split("|"),0,"Parallel plates create a uniform field between them.");
+add("Electric Field","If a 2 μC charge experiences a force of 0.01 N, the electric field is:","5000 N/C|0.00002 N/C|20000 N/C|50 N/C".split("|"),0,"E = F/q = 0.01/(2×10⁻⁶) = 5000 N/C.",true);
+add("Electric Field","The electric field at 0.5 m from a +4 μC charge is:","1.44 × 10⁵ N/C|3.6 × 10⁴ N/C|7.2 × 10⁴ N/C|2.88 × 10⁵ N/C".split("|"),0,"E = kQ/r² = 9×10⁹ × 4×10⁻⁶ / 0.25 = 1.44×10⁵ N/C.",true);
+add("Electric Field","What happens to electric field if both charge and distance are doubled?","Decreases to half|Remains the same|Doubles|Quadruples".split("|"),0,"E = kQ/r². If Q→2Q and r→2r: E → k(2Q)/(2r)² = kQ/(2r²) = E/2.");
+add("Electric Field","The electric field at the midpoint between two equal positive charges is:","Zero|Maximum|Pointing toward one charge|Infinite".split("|"),0,"The two fields are equal and opposite at the midpoint, so they cancel.");
+add("Electric Field","Electric field lines and equipotential surfaces are:","Perpendicular to each other|Parallel to each other|At 45° to each other|Unrelated".split("|"),0,"E = -∇V, so field lines are always perpendicular to equipotentials.");
+add("Electric Field","The work done by electric field in moving a charge around a closed loop is:","Zero|Maximum|Equal to the field strength|Depends on the path".split("|"),0,"Electric field is conservative; work around any closed path is zero.");
+add("Electric Field","A dipole in a non-uniform electric field experiences:","Both torque and net force|Only torque|Only force|Neither torque nor force".split("|"),0,"In non-uniform fields, a dipole experiences both torque (due to couple) and net force (due to field gradient).");
+add("Electric Field","The dimension of electric field is:","[MLT⁻³A⁻¹]|[ML²T⁻³A⁻¹]|[MLT⁻²A⁻¹]|[MT⁻³A⁻¹]".split("|"),0,"E = F/q = [MLT⁻²]/[AT] = [MLT⁻³A⁻¹].");
+add("Electric Field","Two point charges +q and +4q are 30 cm apart. Where is E = 0?","10 cm from +q|15 cm from +q|20 cm from +q|At the midpoint".split("|"),0,"E = 0 where kq/x² = k(4q)/(30-x)². Solving: x = 10 cm from +q.",true);
+add("Electric Field","A charge of 5 nC creates what field at 3 m distance?","5 N/C|15 N/C|45 N/C|1.5 N/C".split("|"),0,"E = kQ/r² = 9×10⁹ × 5×10⁻⁹ / 9 = 5 N/C.",true);
+add("Electric Field","The relation between electric field E and electric force F on charge q is:","F = qE|F = E/q|F = q/E|F = E + q".split("|"),0,"F = qE is the fundamental relation. Force equals charge times field.",true);
+add("Electric Field","What is the electric field due to an infinite line charge?","E = λ/(2πε₀r)|E = λ/(4πε₀r²)|E = λr/(2πε₀)|E = λ/(4πε₀r)".split("|"),0,"For an infinite line charge with linear density λ, E = λ/(2πε₀r).",true);
+add("Electric Field","The electric field at the surface of a charged conductor is:","Perpendicular to the surface|Parallel to the surface|Zero|At 45° to the surface".split("|"),0,"If E had a tangential component, charges would move. At equilibrium, E is perpendicular.");
+add("Electric Field","Gauss's law relates electric flux to:","Enclosed charge|Total charge in space|Electric potential|Magnetic field".split("|"),0,"Gauss's law: Φ = Q_enclosed/ε₀. Flux depends only on enclosed charge.");
+add("Electric Field","The permittivity of free space ε₀ equals approximately:","8.85 × 10⁻¹² F/m|9 × 10⁹ N·m²/C²|1.6 × 10⁻¹⁹ C|8.85 × 10⁻¹² C²/N·m²".split("|"),0,"ε₀ ≈ 8.85 × 10⁻¹² F/m (or C²/N·m²).");
+add("Electric Field","Electric flux through a closed surface with no enclosed charge is:","Zero|Maximum|Infinite|Depends on surface area".split("|"),0,"By Gauss's law, if Q_enclosed = 0, then Φ = 0.");
+add("Electric Field","The unit of electric flux is:","N·m²/C or V·m|N/C|C/m²|J/C".split("|"),0,"Φ = E·A gives units of (N/C)×m² = N·m²/C.");
+add("Electric Field","A hollow conducting sphere with charge Q has field inside the cavity:","Zero (if no charge in cavity)|Equal to kQ/r²|Uniform|Infinite".split("|"),0,"Inside a hollow conductor with no charge in the cavity, E = 0.");
+add("Electric Field","The electric field just outside a conductor with surface charge density σ is:","E = σ/ε₀|E = σε₀|E = σ/(2ε₀)|E = 2σ/ε₀".split("|"),0,"Just outside a conductor, E = σ/ε₀ (perpendicular to surface).",true);
+add("Electric Field","Two charges exert forces F on each other. If one charge is doubled:","Force becomes 2F|Force becomes 4F|Force remains F|Force becomes F/2".split("|"),0,"F = kq₁q₂/r². Doubling one charge doubles F.");
+add("Electric Field","A dipole has charges ±2 nC separated by 1 cm. Its dipole moment is:","2 × 10⁻¹¹ C·m|2 × 10⁻⁹ C·m|2 × 10⁻⁷ C·m|0.02 C·m".split("|"),0,"p = qd = 2×10⁻⁹ × 0.01 = 2×10⁻¹¹ C·m.",true);
+add("Electric Field","The torque on a dipole with moment 3×10⁻⁹ C·m in a 2×10⁴ N/C field at 30° is:","3 × 10⁻⁵ N·m|6 × 10⁻⁵ N·m|1.5 × 10⁻⁵ N·m|5.2 × 10⁻⁵ N·m".split("|"),0,"τ = pE sin θ = 3×10⁻⁹ × 2×10⁴ × 0.5 = 3×10⁻⁵ N·m.",true);
+add("Electric Field","The work done rotating a dipole from parallel to perpendicular to E is:","pE|2pE|pE/2|Zero".split("|"),0,"W = ΔU = -pE cos 90° - (-pE cos 0°) = 0 - (-pE) = pE.",true);
+add("Electric Field","Electric field lines:","Never form closed loops in electrostatics|Always form closed loops|Are always straight|Never intersect except at charges".split("|"),0,"Electrostatic field lines start and end on charges; they don't form closed loops (unlike magnetic field lines).");
+add("Electric Field","The principle behind an electrostatic shielding is:","E = 0 inside conductor|Charges accumulate inside|Field lines pass through conductors|Conductors amplify fields".split("|"),0,"Inside a conductor, E = 0. This shields the interior from external fields.");
+add("Electric Field","If three identical charges are at corners of an equilateral triangle, the field at the center is:","Zero|Toward one charge|Away from all charges|Maximum".split("|"),0,"By symmetry, the three fields cancel at the centroid of an equilateral triangle.");
+add("Electric Field","The electric field at distance r from the center of a uniformly charged sphere (r < R) is:","E = kQr/R³|E = kQ/r²|E = 0|E = kQ/R²".split("|"),0,"Inside a uniformly charged sphere, E increases linearly: E = kQr/R³.",true);
+
+// ===== ELECTRIC FIELD LINES (45 questions) =====
+add("Electric Field Lines","Electric field lines originate from:","Positive charges|Negative charges|Both types of charges|Neutral points".split("|"),0,"Field lines start on positive charges and end on negative charges.");
+add("Electric Field Lines","Electric field lines terminate on:","Negative charges|Positive charges|Any surface|They don't terminate".split("|"),0,"Field lines end on negative charges (or go to infinity).");
+add("Electric Field Lines","Electric field lines can never:","Cross each other|Be curved|End on charges|Start from charges".split("|"),0,"Crossing would imply two field directions at one point, which is impossible.");
+add("Electric Field Lines","At a point where field lines are closely spaced, the electric field is:","Strong|Weak|Zero|Uniform".split("|"),0,"Line density represents field strength. Close spacing = strong field.");
+add("Electric Field Lines","Electric field lines around an isolated positive charge are:","Radially outward|Radially inward|Circular|Straight and parallel".split("|"),0,"Field lines point away from positive charges, radially for a point charge.");
+add("Electric Field Lines","Electric field lines around an isolated negative charge are:","Radially inward|Radially outward|Circular|Absent".split("|"),0,"Field lines point toward negative charges, radially inward for point charge.");
+add("Electric Field Lines","The tangent to a field line at any point gives:","The direction of E at that point|The magnitude of E|The potential at that point|The charge at that point".split("|"),0,"By definition, field lines are tangent to E at every point.");
+add("Electric Field Lines","In a uniform electric field, field lines are:","Parallel and equally spaced|Converging|Diverging|Curved".split("|"),0,"Uniform field = constant magnitude and direction = parallel, evenly spaced lines.");
+add("Electric Field Lines","The number of field lines is proportional to:","The magnitude of the charge|The square of the charge|The distance from the charge|The potential".split("|"),0,"More charge = more field lines. Number ∝ |Q|.");
+add("Electric Field Lines","Electric field lines between two opposite charges are:","Curved lines from + to −|Straight parallel lines|Circular loops|Absent".split("|"),0,"Field lines curve from the positive charge to the negative charge (dipole pattern).");
+add("Electric Field Lines","Electric field lines between two like charges:","Repel each other, never meeting|Attract and merge|Form closed loops|Are straight lines".split("|"),0,"Like charges repel; their field lines push apart and never cross.");
+add("Electric Field Lines","A region with no field lines has:","Zero electric field|Maximum electric field|Uniform field|Infinite field".split("|"),0,"No field lines = no electric field (E = 0).");
+add("Electric Field Lines","Electric field lines for a dipole:","Go from + to − and extend to infinity|Form closed loops|Are all parallel|Only exist between the charges".split("|"),0,"Dipole field lines go from + to −, some curving around and extending to infinity.");
+add("Electric Field Lines","Field lines on a conducting surface are:","Perpendicular to the surface|Parallel to the surface|At 45° to the surface|Absent".split("|"),0,"On conductors in equilibrium, E is perpendicular to the surface.");
+add("Electric Field Lines","Near a pointed conductor, field lines are:","Closely spaced (strong field)|Widely spaced (weak field)|Absent|Parallel to the surface".split("|"),0,"Charge density is high at sharp points, making the field (and line density) stronger.");
+add("Electric Field Lines","Inside a charged conductor in equilibrium:","There are no field lines|Field lines are uniform|Field lines point to the center|Field lines are circular".split("|"),0,"E = 0 inside a conductor, so no field lines exist there.");
+add("Electric Field Lines","The direction of the electric field at a point is:","The direction a positive charge would move|The direction a negative charge would move|Random|Perpendicular to charge motion".split("|"),0,"E points in the direction of force on a positive test charge.");
+add("Electric Field Lines","Equipotential surfaces are:","Perpendicular to field lines|Parallel to field lines|At 45° to field lines|Unrelated to field lines".split("|"),0,"Field lines are always perpendicular to equipotential surfaces.");
+add("Electric Field Lines","For a uniform field, equipotential surfaces are:","Parallel planes perpendicular to the field|Concentric spheres|Curved surfaces|Cylinders".split("|"),0,"Uniform field = parallel equipotentials perpendicular to E.");
+add("Electric Field Lines","The work done moving a charge along an equipotential surface is:","Zero|Maximum|Equal to qE|Depends on the path".split("|"),0,"No potential difference along equipotential = no work: W = qΔV = 0.");
+add("Electric Field Lines","If field lines converge at a point, there is likely:","A negative charge|A positive charge|No charge|A neutral point".split("|"),0,"Field lines converge toward (end on) negative charges.");
+add("Electric Field Lines","If field lines diverge from a point, there is likely:","A positive charge|A negative charge|No charge|A neutral point".split("|"),0,"Field lines diverge from (start on) positive charges.");
+add("Electric Field Lines","Which statement is FALSE about field lines?","They can form closed loops in electrostatics|They never cross|They start on + charges|They end on − charges".split("|"),0,"Electrostatic field lines never form closed loops (unlike magnetic field lines).");
+add("Electric Field Lines","The electric field is strongest where field lines are:","Most dense|Least dense|Parallel|Perpendicular".split("|"),0,"Field strength ∝ line density. More lines per area = stronger field.");
+add("Electric Field Lines","A charged particle released in a uniform field moves:","In a straight line (along field direction)|In a circle|In a parabola|It doesn't move".split("|"),0,"In a uniform field, force is constant → straight-line acceleration.");
+add("Electric Field Lines","A charged particle entering a uniform field perpendicular to it moves in:","A parabola|A circle|A straight line|A helix".split("|"),0,"Like projectile motion: constant velocity in one direction, constant acceleration in another = parabola.");
+add("Electric Field Lines","The motion of a charge in a uniform electric field is analogous to:","Projectile motion in gravity|Circular motion|Simple harmonic motion|Random walk".split("|"),0,"Constant force = constant acceleration, just like gravity on a projectile.");
+add("Electric Field Lines","Electric field lines from a positive charge Q and negative charge 2Q:","More lines end on −2Q than leave +Q|Equal lines on both|More lines leave +Q|Lines form a closed loop".split("|"),0,"Number of lines ∝ |charge|. So 2Q gets twice as many lines as Q.");
+add("Electric Field Lines","At a neutral point in an electric field:","E = 0, so no field lines pass through|E is maximum|Field lines cross|Field lines form loops".split("|"),0,"At a neutral point, E = 0, so there are no field lines there.");
+add("Electric Field Lines","The electric flux through a surface is related to:","Number of field lines passing through|Color of the field lines|Temperature|Magnetic field".split("|"),0,"Electric flux = ∫E·dA ∝ number of field lines through the surface.");
+add("Electric Field Lines","For two parallel plates with charges +Q and −Q:","Field lines are straight between plates, zero outside|Field lines curve around|No field exists|Field is maximum outside".split("|"),0,"Between parallel plates: uniform field, straight lines. Outside: fields cancel (ideally).");
+add("Electric Field Lines","An electron beam enters a region with electric field pointing upward. The beam:","Deflects downward|Deflects upward|Goes straight|Stops".split("|"),0,"Electrons are negative, so force is opposite to E. E up → F down → deflection down.");
+add("Electric Field Lines","A proton beam enters a region with electric field pointing right. The beam:","Deflects right|Deflects left|Goes straight|Stops".split("|"),0,"Protons are positive, so force is in direction of E. E right → deflects right.");
+add("Electric Field Lines","In a cathode ray tube, electrons are deflected by:","Electric (or magnetic) fields|Gravitational fields only|Nuclear forces|No force acts".split("|"),0,"CRT uses electric and/or magnetic fields to steer the electron beam.");
+add("Electric Field Lines","Electric field lines near an infinite plane of charge are:","Perpendicular to the plane, uniform|Radial|Circular|They don't exist".split("|"),0,"An infinite charged plane produces a uniform field perpendicular to it.");
+add("Electric Field Lines","Two large parallel plates form a capacitor. The field outside the plates is approximately:","Zero|Uniform|Maximum|Infinite".split("|"),0,"Outside the plates, fields from +Q and −Q cancel, giving E ≈ 0.");
+add("Electric Field Lines","The electric field between capacitor plates with potential difference V and separation d is:","E = V/d|E = Vd|E = V/d²|E = d/V".split("|"),0,"For uniform field: E = V/d.",true);
+add("Electric Field Lines","If the separation between capacitor plates is halved while V is constant, E:","Doubles|Halves|Quadruples|Remains the same".split("|"),0,"E = V/d. Halving d doubles E.");
+add("Electric Field Lines","An alpha particle (charge +2e) in an electric field experiences:","Twice the force on a proton|Same force as a proton|Half the force on a proton|No force".split("|"),0,"F = qE. Alpha has q = 2e, so F = 2eE (twice that of a proton).");
+add("Electric Field Lines","The acceleration of a particle in an electric field depends on:","Its charge-to-mass ratio (q/m)|Only its charge|Only its mass|Neither charge nor mass".split("|"),0,"a = F/m = qE/m. So a ∝ q/m.");
+add("Electric Field Lines","An electron and proton are in the same field. Which has greater acceleration?","Electron (much lighter)|Proton (more charge)|Same acceleration|Neither accelerates".split("|"),0,"Same |q|, but electron has much smaller mass. a = qE/m, so electron accelerates more.");
+add("Electric Field Lines","Millikan's oil drop experiment measured:","The charge of an electron|The mass of an electron|The speed of light|Planck's constant".split("|"),0,"Millikan determined e = 1.6 × 10⁻¹⁹ C by balancing oil drops in electric fields.");
+add("Electric Field Lines","In Millikan's experiment, an oil drop is stationary when:","Electric force balances gravity|There is no electric field|The drop is neutral|The drop is at the center".split("|"),0,"qE = mg when stationary. This allows calculation of q.");
+add("Electric Field Lines","The electric field required to balance a 1×10⁻¹⁴ kg drop with charge 2e is:","3.1 × 10⁵ N/C|9.8 N/C|1.6 × 10⁵ N/C|5 × 10⁴ N/C".split("|"),0,"qE = mg → E = mg/q = (10⁻¹⁴ × 10)/(2×1.6×10⁻¹⁹) ≈ 3.1×10⁵ N/C.",true);
+add("Electric Field Lines","Field lines are:","Imaginary lines representing the field|Physical objects|Made of electrons|Only visible in vacuum".split("|"),0,"Field lines are a visualization tool, not physical entities.");
+
+// ===== ELECTRIC POTENTIAL (55 questions) =====
+add("Electric Potential","Electric potential at a point is defined as:","Work done per unit positive charge to bring it from infinity|Force per unit charge|Energy per unit area|Charge per unit distance".split("|"),0,"V = W/q₀. Work done by external agent per unit positive charge from ∞.");
+add("Electric Potential","The SI unit of electric potential is:","Volt (V)|Newton (N)|Joule (J)|Coulomb (C)".split("|"),0,"1 Volt = 1 Joule/Coulomb = 1 J/C.");
+add("Electric Potential","Electric potential is a:","Scalar quantity|Vector quantity|Tensor|Neither".split("|"),0,"Potential has magnitude (and sign) but no direction. It's a scalar.");
+add("Electric Potential","The potential due to a point charge Q at distance r is:","V = kQ/r|V = kQ/r²|V = kQr|V = kQ/r³".split("|"),0,"V = kQ/r. Unlike E (which goes as 1/r²), V goes as 1/r.",true);
+add("Electric Potential","If the distance from a point charge is doubled, the potential:","Decreases to half|Decreases to one-quarter|Doubles|Remains the same".split("|"),0,"V ∝ 1/r. Doubling r halves V.");
+add("Electric Potential","Potential difference between two points A and B is:","V_A − V_B|V_A + V_B|V_A × V_B|V_A / V_B".split("|"),0,"Potential difference (voltage) = V_A − V_B.");
+add("Electric Potential","The work done moving charge q through potential difference V is:","W = qV|W = q/V|W = V/q|W = qV²".split("|"),0,"W = qΔV. Work equals charge times potential difference.",true);
+add("Electric Potential","Potential at 0.2 m from a +5 μC charge is:","2.25 × 10⁵ V|4.5 × 10⁵ V|1.125 × 10⁵ V|9 × 10⁵ V".split("|"),0,"V = kQ/r = 9×10⁹ × 5×10⁻⁶ / 0.2 = 2.25×10⁵ V.",true);
+add("Electric Potential","At which point is the potential due to a negative charge zero?","At infinity|At the charge|Everywhere|Nowhere".split("|"),0,"V = kQ/r → 0 as r → ∞. By convention, V = 0 at infinity.");
+add("Electric Potential","The potential due to a negative charge is:","Negative at all finite distances|Positive everywhere|Zero everywhere|Undefined".split("|"),0,"V = kQ/r. If Q < 0, then V < 0 for all finite r.");
+add("Electric Potential","The relationship between E and V is:","E = −dV/dr|E = dV/dr|E = V/r|E = Vr".split("|"),0,"Electric field is the negative gradient of potential: E = −dV/dr.",true);
+add("Electric Potential","If V is constant in a region, the electric field there is:","Zero|Maximum|Uniform (non-zero)|Infinite".split("|"),0,"E = −dV/dr. If V is constant, dV/dr = 0, so E = 0.");
+add("Electric Potential","Equipotential surfaces around a point charge are:","Concentric spheres|Parallel planes|Cylinders|Cones".split("|"),0,"V = kQ/r = const means r = const, which defines spheres.");
+add("Electric Potential","On an equipotential surface:","All points have the same potential|E is maximum|V = 0|E is parallel to the surface".split("|"),0,"By definition, all points on an equipotential have equal V.");
+add("Electric Potential","Work done moving a charge along an equipotential is:","Zero|Maximum|Equal to qE|Cannot be determined".split("|"),0,"W = qΔV. On equipotential, ΔV = 0, so W = 0.");
+add("Electric Potential","Electric field lines point:","From high potential to low potential|From low to high potential|Along equipotentials|Randomly".split("|"),0,"E = −dV/dr means E points toward decreasing V.");
+add("Electric Potential","The electron volt (eV) is a unit of:","Energy|Potential|Charge|Current".split("|"),0,"1 eV = 1.6×10⁻¹⁹ J. It's the energy gained by an electron through 1 V.");
+add("Electric Potential","1 eV equals:","1.6 × 10⁻¹⁹ J|1.6 × 10⁻¹⁹ C|1 V|9 × 10⁹ J".split("|"),0,"1 eV = (1.6×10⁻¹⁹ C)(1 V) = 1.6×10⁻¹⁹ J.");
+add("Electric Potential","A proton moves from 100 V to 0 V. It gains kinetic energy of:","100 eV|100 J|100 C|0".split("|"),0,"ΔKE = qΔV = e × 100 V = 100 eV.",true);
+add("Electric Potential","An electron moves from 0 V to 100 V. It:","Loses 100 eV of KE (slows down)|Gains 100 eV of KE|Gains potential energy|Stays the same".split("|"),0,"Electron (−e) moving to higher V gains PE and loses KE. W = qΔV = (−e)(100) = −100 eV.");
+add("Electric Potential","Potential energy of two charges q₁ and q₂ separated by r is:","U = kq₁q₂/r|U = kq₁q₂/r²|U = kq₁q₂r|U = kq₁q₂".split("|"),0,"U = kq₁q₂/r. This is the work done to bring them together from infinity.",true);
+add("Electric Potential","The potential energy of two like charges is:","Positive|Negative|Zero|Infinite".split("|"),0,"Like charges: q₁q₂ > 0, so U = kq₁q₂/r > 0.");
+add("Electric Potential","The potential energy of two unlike charges is:","Negative|Positive|Zero|Infinite".split("|"),0,"Unlike charges: q₁q₂ < 0, so U = kq₁q₂/r < 0.");
+add("Electric Potential","If 5 J of work brings 2 C of charge from infinity, the potential there is:","2.5 V|10 V|0.4 V|7 V".split("|"),0,"V = W/q = 5/2 = 2.5 V.",true);
+add("Electric Potential","The potential at the midpoint between +Q and −Q is:","Zero|Infinite|kQ/d|2kQ/d".split("|"),0,"V = kQ/r + k(−Q)/r = 0 (equal and opposite contributions).");
+add("Electric Potential","The potential at the midpoint between two +Q charges separated by 2d is:","2kQ/d|kQ/d|Zero|kQ/2d".split("|"),0,"Each contributes kQ/d, so V = kQ/d + kQ/d = 2kQ/d.");
+add("Electric Potential","The potential due to an electric dipole on its axis varies as:","1/r²|1/r|1/r³|r".split("|"),0,"On the axis of a dipole, V ∝ 1/r² at large distances.");
+add("Electric Potential","The potential due to a dipole on its equatorial plane is:","Zero|Maximum|Same as on axis|Negative".split("|"),0,"On the equatorial plane, the +Q and −Q contributions cancel: V = 0.");
+add("Electric Potential","Work done by the electric field when a positive charge moves from high to low potential is:","Positive|Negative|Zero|Undefined".split("|"),0,"The field does positive work when pushing + charge toward lower V (natural direction).");
+add("Electric Potential","Volt per meter (V/m) is the same as:","Newton per coulomb (N/C)|Joule per meter|Coulomb per second|Ampere per volt".split("|"),0,"E = V/d and E = F/q. So V/m = N/C.");
+add("Electric Potential","A 3 μC charge at a point where V = 1000 V has potential energy:","3 × 10⁻³ J|3 × 10³ J|0.003 V|3000 C".split("|"),0,"U = qV = 3×10⁻⁶ × 1000 = 3×10⁻³ J.",true);
+add("Electric Potential","Which is true about equipotential surfaces?","They never intersect|They cross at 45°|They are always spherical|E is tangent to them".split("|"),0,"If they intersected, there would be two potentials at one point, which is impossible.");
+add("Electric Potential","The potential inside a charged conducting sphere is:","Constant (equal to surface potential)|Zero|Maximum at center|Variable".split("|"),0,"Inside a conductor in equilibrium, E = 0, so V is constant (same as surface value).");
+add("Electric Potential","The work done moving a charge q from A to B against the electric field is:","q(V_B − V_A)|q(V_A − V_B)|qE|qEr".split("|"),0,"Work by external agent = q(V_final − V_initial) = q(V_B − V_A).",true);
+add("Electric Potential","A uniform electric field of 100 V/m acts over 2 m. The potential difference is:","200 V|50 V|100 V|2 V".split("|"),0,"V = Ed = 100 × 2 = 200 V.",true);
+add("Electric Potential","The potential at the center of a charged conducting shell is:","Same as on the surface|Zero|Higher than surface|Lower than surface".split("|"),0,"Inside a conductor, E = 0, so V is constant = surface value.");
+add("Electric Potential","Two charges +2 μC are 4 m apart. The potential at the midpoint is:","18000 V|9000 V|36000 V|0 V".split("|"),0,"V = kQ/r + kQ/r = 2 × 9×10⁹ × 2×10⁻⁶ / 2 = 18000 V.",true);
+add("Electric Potential","The potential at 10 cm from a −4 nC charge is:","−360 V|+360 V|−36 V|−3600 V".split("|"),0,"V = kQ/r = 9×10⁹ × (−4×10⁻⁹) / 0.1 = −360 V.",true);
+add("Electric Potential","A charge of −5 μC moves from V = 0 to V = 100 V. Work done by the field is:","5 × 10⁻⁴ J|−5 × 10⁻⁴ J|0|5 × 10⁻² J".split("|"),0,"W_field = −qΔV = −(−5×10⁻⁶)(100−0) = 5×10⁻⁴ J.",true);
+add("Electric Potential","If V = 3x² + 2y (in SI units), the electric field at (1, 1) is:","E = −6x̂ − 2ŷ, so E = (−6, −2)|E = (6, 2)|E = (−3, −2)|E = (6, 0)".split("|"),0,"E = −∇V = (−∂V/∂x, −∂V/∂y) = (−6x, −2). At (1,1): E = (−6, −2).");
+add("Electric Potential","The electric potential energy of a system of charges represents:","Work done to assemble the system|Total charge|Electric field at a point|Current in the system".split("|"),0,"PE = work done by external agent to bring all charges from infinity to their positions.");
+add("Electric Potential","For a continuous charge distribution, potential is found by:","Integration: V = ∫k dq/r|Differentiation|Multiplication of charges|Division by area".split("|"),0,"V = k∫dq/r. We integrate contributions from each infinitesimal charge element.");
+add("Electric Potential","The potential gradient has dimensions of:","Electric field|Potential|Charge|Energy".split("|"),0,"Potential gradient = dV/dr has units V/m = N/C, same as electric field.");
+add("Electric Potential","A 2 C charge moves through 5 V potential difference. Work done is:","10 J|2.5 J|0.4 J|7 J".split("|"),0,"W = qV = 2 × 5 = 10 J.",true);
+add("Electric Potential","The SI unit J/C is equivalent to:","Volt|Ampere|Ohm|Watt".split("|"),0,"1 V = 1 J/C by definition.");
+add("Electric Potential","What is 5 MeV in joules?","8 × 10⁻¹³ J|5 × 10⁶ J|5 × 10⁻¹⁹ J|8 × 10⁻⁶ J".split("|"),0,"5 MeV = 5×10⁶ × 1.6×10⁻¹⁹ = 8×10⁻¹³ J.",true);
+add("Electric Potential","The potential difference needed to stop an electron with KE = 100 eV is:","100 V|100 eV|1.6 × 10⁻¹⁷ V|6.25 × 10²⁰ V".split("|"),0,"qV = KE → eV = 100 eV → V = 100 V.",true);
+add("Electric Potential","A positive charge naturally moves:","From high to low potential|From low to high potential|Along equipotentials|Opposite to the field".split("|"),0,"Positive charges are pushed by E toward lower V (the field does positive work).");
+add("Electric Potential","A negative charge naturally moves:","From low to high potential|From high to low potential|Along equipotentials|In the direction of E".split("|"),0,"Negative charges are pushed opposite to E, toward higher V.");
+add("Electric Potential","The work done by the field in moving a charge in a closed loop is:","Zero|Maximum|qE times perimeter|Undefined".split("|"),0,"Electric field is conservative: W = 0 for any closed path.");
+add("Electric Potential","The potential energy of three charges at vertices of an equilateral triangle with side a is:","U = k(q₁q₂ + q₂q₃ + q₁q₃)/a|U = kq₁q₂q₃/a²|U = k(q₁+q₂+q₃)/a|U = 0".split("|"),0,"Sum of pair energies: U = kq₁q₂/a + kq₂q₃/a + kq₁q₃/a.",true);
+add("Electric Potential","The electric potential due to a uniformly charged sphere at distance r > R is:","V = kQ/r (same as point charge)|V = kQ/R|V = 0|V = kQr/R²".split("|"),0,"Outside a uniformly charged sphere, V = kQ/r, as if all charge is at the center.",true);
+
+// ===== CONDUCTORS AND RESISTANCE (75 questions) =====
+add("Conductors and Resistance","Electric current is defined as:","Rate of flow of electric charge|Amount of charge in a conductor|Force on a charge|Potential difference".split("|"),0,"I = dQ/dt. Current is charge per unit time.");
+add("Conductors and Resistance","The SI unit of electric current is:","Ampere (A)|Volt (V)|Ohm (Ω)|Coulomb (C)".split("|"),0,"Current is measured in amperes. 1 A = 1 C/s.");
+add("Conductors and Resistance","In metallic conductors, current is carried by:","Free electrons|Protons|Positive ions|Neutrons".split("|"),0,"In metals, valence electrons are free to move and carry current.");
+add("Conductors and Resistance","Conventional current flows:","From positive to negative terminal|From negative to positive terminal|In the direction of electron flow|Only in AC circuits".split("|"),0,"By convention, current flows + to − (opposite to electron drift).");
+add("Conductors and Resistance","If 6 C of charge flows in 2 s, the current is:","3 A|12 A|4 A|0.33 A".split("|"),0,"I = Q/t = 6/2 = 3 A.",true);
+add("Conductors and Resistance","A conductor differs from an insulator because:","Conductors have free charge carriers|Conductors have no electrons|Insulators have more electrons|Conductors have no atoms".split("|"),0,"Conductors have electrons free to move; insulators have tightly bound electrons.");
+add("Conductors and Resistance","Semiconductors have conductivity that:","Increases with temperature|Decreases with temperature|Is always zero|Equals that of metals".split("|"),0,"In semiconductors, more carriers are freed at higher T, increasing conductivity.");
+add("Conductors and Resistance","Resistance is defined as:","V/I|I/V|IV|V + I".split("|"),0,"R = V/I by Ohm's law definition.",true);
+add("Conductors and Resistance","The SI unit of resistance is:","Ohm (Ω)|Volt (V)|Siemens (S)|Ampere (A)".split("|"),0,"1 Ω = 1 V/A.");
+add("Conductors and Resistance","Ohm's law states that:","V ∝ I at constant temperature|V ∝ R|I ∝ R|V = I + R".split("|"),0,"Ohm's law: V = IR, or V is proportional to I for ohmic conductors.");
+add("Conductors and Resistance","Ohm's law is valid for:","Metallic conductors at constant temperature|All materials|Semiconductors|Only at high currents".split("|"),0,"Ohm's law holds for ohmic materials (metals at constant T).");
+add("Conductors and Resistance","Resistance of a conductor depends on:","Length, area, and material|Only length|Only material|Only temperature".split("|"),0,"R = ρL/A. Depends on resistivity (material), length, and cross-sectional area.");
+add("Conductors and Resistance","The formula for resistance is:","R = ρL/A|R = ρA/L|R = L/ρA|R = ρ/LA".split("|"),0,"R = ρL/A, where ρ is resistivity, L is length, A is area.",true);
+add("Conductors and Resistance","Resistivity is measured in:","Ω·m|Ω|Ω/m|m/Ω".split("|"),0,"From R = ρL/A, ρ = RA/L has units Ω·m.");
+add("Conductors and Resistance","If the length of a wire is doubled (area constant), resistance:","Doubles|Halves|Quadruples|Remains the same".split("|"),0,"R ∝ L. Doubling L doubles R.");
+add("Conductors and Resistance","If the diameter of a wire is doubled (length constant), resistance:","Decreases to 1/4|Decreases to 1/2|Doubles|Quadruples".split("|"),0,"A ∝ d². Doubling d quadruples A, so R = ρL/A decreases to 1/4.");
+add("Conductors and Resistance","For most metals, resistance _____ with temperature.","Increases|Decreases|Remains constant|First decreases then increases".split("|"),0,"In metals, increased T causes more lattice vibrations, scattering electrons more.");
+add("Conductors and Resistance","A 12 V battery drives 3 A through a resistor. The resistance is:","4 Ω|36 Ω|0.25 Ω|15 Ω".split("|"),0,"R = V/I = 12/3 = 4 Ω.",true);
+add("Conductors and Resistance","A 10 Ω resistor carries 2 A. The voltage across it is:","20 V|5 V|0.2 V|12 V".split("|"),0,"V = IR = 2 × 10 = 20 V.",true);
+add("Conductors and Resistance","The current through a 100 Ω resistor with 10 V across it is:","0.1 A|1000 A|10 A|1 A".split("|"),0,"I = V/R = 10/100 = 0.1 A.",true);
+add("Conductors and Resistance","Three 6 Ω resistors in series have total resistance:","18 Ω|2 Ω|6 Ω|216 Ω".split("|"),0,"In series: R_total = R₁ + R₂ + R₃ = 6+6+6 = 18 Ω.",true);
+add("Conductors and Resistance","In a series circuit, current is:","Same through all components|Different in each component|Zero|Maximum".split("|"),0,"In series, only one path exists, so current is the same everywhere.");
+add("Conductors and Resistance","In a series circuit, voltage:","Divides among components|Is the same across all|Is zero|Cannot exist".split("|"),0,"In series, V_total = V₁ + V₂ + ... Voltage divides proportionally to R.");
+add("Conductors and Resistance","Two 10 Ω resistors in parallel have equivalent resistance:","5 Ω|20 Ω|100 Ω|10 Ω".split("|"),0,"1/R = 1/10 + 1/10 = 2/10 → R = 5 Ω.",true);
+add("Conductors and Resistance","For resistors in parallel:","1/R_eq = 1/R₁ + 1/R₂ + ...|R_eq = R₁ + R₂ + ...|R_eq = R₁R₂|R_eq = R₁ − R₂".split("|"),0,"Parallel: reciprocal sum. 1/R_eq = Σ(1/R_i).",true);
+add("Conductors and Resistance","In a parallel circuit, voltage across each branch is:","The same|Different|Zero|Proportional to resistance".split("|"),0,"In parallel, all branches connect to the same two nodes, so V is equal.");
+add("Conductors and Resistance","In a parallel circuit, current:","Divides among branches|Is the same in all branches|Is zero|Is maximum in smallest R".split("|"),0,"I_total = I₁ + I₂ + ... Current divides, with more going through lower R.");
+add("Conductors and Resistance","The equivalent resistance of resistors in parallel is always:","Less than the smallest resistor|Greater than the largest|Equal to the sum|Equal to the average".split("|"),0,"Adding parallel paths reduces total resistance. R_eq < smallest R_i.");
+add("Conductors and Resistance","A 4 Ω and 12 Ω resistor in parallel have equivalent resistance:","3 Ω|16 Ω|48 Ω|8 Ω".split("|"),0,"R = (4×12)/(4+12) = 48/16 = 3 Ω.",true);
+add("Conductors and Resistance","Electric power is defined as:","Rate of energy dissipation|Total energy used|Voltage squared|Current squared".split("|"),0,"P = dW/dt = IV. Power is energy per unit time.");
+add("Conductors and Resistance","The SI unit of electric power is:","Watt (W)|Joule (J)|Volt (V)|Ampere (A)".split("|"),0,"1 Watt = 1 Joule/second = 1 Volt × 1 Ampere.");
+add("Conductors and Resistance","Which formula for power is correct?","All: P = IV = I²R = V²/R|Only P = IV|Only P = I²R|Only P = V²/R".split("|"),0,"P = IV. Using V = IR: P = I(IR) = I²R. Using I = V/R: P = V(V/R) = V²/R.",true);
+add("Conductors and Resistance","A 60 W bulb at 120 V draws current of:","0.5 A|7200 A|2 A|60 A".split("|"),0,"I = P/V = 60/120 = 0.5 A.",true);
+add("Conductors and Resistance","The power dissipated in a 20 Ω resistor with 4 A is:","320 W|80 W|5 W|160 W".split("|"),0,"P = I²R = 16 × 20 = 320 W.",true);
+add("Conductors and Resistance","The power in a 50 Ω resistor with 100 V across it is:","200 W|5000 W|2 W|50 W".split("|"),0,"P = V²/R = 10000/50 = 200 W.",true);
+add("Conductors and Resistance","One kilowatt-hour equals:","3.6 × 10⁶ J|1000 J|3600 J|1 MJ".split("|"),0,"1 kWh = 1000 W × 3600 s = 3.6 × 10⁶ J.");
+add("Conductors and Resistance","Joule's law of heating states:","H = I²Rt|H = IVt|H = V²t|H = IRt".split("|"),0,"H = I²Rt. Heat is proportional to I², R, and time.",true);
+add("Conductors and Resistance","If current is doubled, heat produced (same R and t) becomes:","4 times|2 times|8 times|Same".split("|"),0,"H ∝ I². Doubling I gives 4 times the heat.");
+add("Conductors and Resistance","A 100 Ω resistor carrying 2 A for 10 s produces heat:","4000 J|200 J|2000 J|20 J".split("|"),0,"H = I²Rt = 4 × 100 × 10 = 4000 J.",true);
+add("Conductors and Resistance","The heating element of an iron is made of:","Nichrome|Copper|Silver|Aluminum".split("|"),0,"Nichrome has high resistivity and high melting point, ideal for heating elements.");
+add("Conductors and Resistance","EMF of a cell is:","Energy per unit charge supplied by the cell|Force on a charge|Resistance of the cell|Terminal voltage".split("|"),0,"EMF (ε) = work done per unit charge by the cell's internal mechanism.");
+add("Conductors and Resistance","The SI unit of EMF is:","Volt|Ampere|Ohm|Newton".split("|"),0,"EMF is measured in volts (energy per charge).");
+add("Conductors and Resistance","EMF of a cell is measured when:","No current flows (open circuit)|Maximum current flows|Cell is short-circuited|Load is connected".split("|"),0,"True EMF is measured at open circuit, without internal resistance voltage drop.");
+add("Conductors and Resistance","Terminal voltage is related to EMF by:","V = ε − Ir|V = ε + Ir|V = εIr|V = ε/Ir".split("|"),0,"V = ε − Ir. Terminal voltage is EMF minus internal resistance drop.",true);
+add("Conductors and Resistance","A cell with EMF 1.5 V and internal resistance 0.5 Ω delivers 1 A. Terminal voltage is:","1.0 V|2.0 V|1.5 V|0.5 V".split("|"),0,"V = ε − Ir = 1.5 − 0.5(1) = 1.0 V.",true);
+add("Conductors and Resistance","Internal resistance causes:","Voltage drop inside the cell|Increase in EMF|No effect|Current to increase".split("|"),0,"Internal resistance r causes a drop Ir, reducing terminal voltage below EMF.");
+add("Conductors and Resistance","The maximum current from a cell (short circuit) is:","I = ε/r|I = εr|I = ε + r|I = ε − r".split("|"),0,"Short circuit: external R = 0. I = ε/r.",true);
+add("Conductors and Resistance","Two cells of 1.5 V each in series give EMF:","3.0 V|0.75 V|1.5 V|4.5 V".split("|"),0,"In series, EMFs add: ε_total = 1.5 + 1.5 = 3.0 V.");
+add("Conductors and Resistance","Two identical cells in parallel have equivalent EMF:","Same as one cell|Double|Half|Zero".split("|"),0,"Identical cells in parallel: EMF stays the same, but internal resistance halves.");
+add("Conductors and Resistance","A 3 V battery with 1 Ω internal resistance connected to 2 Ω load gives current:","1 A|3 A|1.5 A|0.67 A".split("|"),0,"I = ε/(R + r) = 3/(2 + 1) = 1 A.",true);
+add("Conductors and Resistance","The drift velocity of electrons is typically:","A few mm/s|Nearly the speed of light|Several m/s|Zero".split("|"),0,"Drift velocity is very slow (~mm/s), despite fast signal propagation.");
+add("Conductors and Resistance","The relation I = nAv_d shows that current depends on:","Carrier density, area, and drift velocity|Only voltage|Only resistance|Only charge".split("|"),0,"I = nAv_d, where n = carrier density, A = area, v_d = drift velocity.",true);
+add("Conductors and Resistance","Which has lowest resistivity?","Silver|Copper|Nichrome|Carbon".split("|"),0,"Silver has the lowest resistivity (~1.6 × 10⁻⁸ Ω·m).");
+add("Conductors and Resistance","The conductance G of a resistor is:","G = 1/R|G = R|G = R²|G = √R".split("|"),0,"Conductance is reciprocal of resistance: G = 1/R.",true);
+add("Conductors and Resistance","The SI unit of conductance is:","Siemens (S)|Ohm (Ω)|Volt (V)|Ampere (A)".split("|"),0,"Conductance is measured in siemens (S), where 1 S = 1/Ω.");
+add("Conductors and Resistance","A superconductor has:","Zero resistance below critical temperature|Infinite resistance|Very high resistance|Normal resistance".split("|"),0,"Superconductors have R = 0 below their critical temperature.");
+add("Conductors and Resistance","A wire of resistance 10 Ω is stretched to twice its length. New resistance is:","40 Ω|20 Ω|5 Ω|10 Ω".split("|"),0,"Volume constant: if L → 2L, then A → A/2. R = ρL/A → ρ(2L)/(A/2) = 4R = 40 Ω.",true);
+add("Conductors and Resistance","Temperature coefficient of resistance for metals is:","Positive|Negative|Zero|Infinite".split("|"),0,"For metals, resistance increases with T, so α > 0.");
+add("Conductors and Resistance","An ammeter should have:","Very low resistance|Very high resistance|Same resistance as load|Infinite resistance".split("|"),0,"Ammeter in series should not affect current, so it needs very low R.");
+add("Conductors and Resistance","A voltmeter should have:","Very high resistance|Very low resistance|Same as load|Zero resistance".split("|"),0,"Voltmeter in parallel should not draw current, so it needs very high R.");
+add("Conductors and Resistance","Kirchhoff's current law states:","Sum of currents at a junction = 0|Sum of voltages in a loop = 0|V = IR|P = IV".split("|"),0,"KCL: ΣI_in = ΣI_out at any junction (charge conservation).");
+add("Conductors and Resistance","Kirchhoff's voltage law states:","Sum of voltages around a closed loop = 0|Sum of currents = 0|V = IR|P = I²R".split("|"),0,"KVL: ΣV = 0 around any closed loop (energy conservation).");
+add("Conductors and Resistance","A 2 kW heater at 200 V draws current:","10 A|400 A|0.01 A|100 A".split("|"),0,"I = P/V = 2000/200 = 10 A.",true);
+add("Conductors and Resistance","The resistance of a 100 W, 200 V bulb is:","400 Ω|2 Ω|0.5 Ω|20000 Ω".split("|"),0,"R = V²/P = 40000/100 = 400 Ω.",true);
+add("Conductors and Resistance","A 60 W and 100 W bulb in series (same rated voltage) — which is brighter?","60 W bulb|100 W bulb|Both equally bright|Neither glows".split("|"),0,"60W bulb has higher R. In series (same I): P = I²R. Higher R → more power → brighter.");
+add("Conductors and Resistance","Energy consumed by a 500 W device in 2 hours is:","1 kWh|1000 kWh|0.25 kWh|2 kWh".split("|"),0,"E = Pt = 0.5 kW × 2 h = 1 kWh.",true);
+add("Conductors and Resistance","The color code Brown-Black-Red-Gold represents:","1000 Ω ± 5%|10 Ω ± 5%|100 Ω ± 5%|10000 Ω ± 5%".split("|"),0,"Brown=1, Black=0, Red=×100, Gold=±5%. So 10 × 100 = 1000 Ω.");
+add("Conductors and Resistance","A rheostat is used to:","Vary resistance and control current|Store charge|Measure voltage|Generate EMF".split("|"),0,"A rheostat is a variable resistor for controlling current in a circuit.");
+add("Conductors and Resistance","A potentiometer is used as:","A voltage divider|A current amplifier|An energy source|A capacitor".split("|"),0,"A potentiometer divides voltage, allowing variable output voltage.");
+add("Conductors and Resistance","Power lines use high voltage transmission to:","Reduce I²R losses|Increase current|Save wire material|Look impressive".split("|"),0,"P = IV constant. Higher V means lower I. Losses = I²R decrease with lower I.");
+add("Conductors and Resistance","A fuse works by:","Melting when current exceeds safe limit|Increasing resistance|Storing charge|Generating EMF".split("|"),0,"Fuse melts (I²R heating) when I is too high, breaking the circuit.");
+add("Conductors and Resistance","The Wheatstone bridge is used to:","Measure unknown resistance accurately|Generate current|Store charge|Measure capacitance".split("|"),0,"Wheatstone bridge uses null method to measure resistance precisely.");
+add("Conductors and Resistance","In a balanced Wheatstone bridge:","P/Q = R/S (no current through galvanometer)|Current is maximum|All resistances equal|Voltage is zero".split("|"),0,"At balance: P/Q = R/S, and no current flows through the galvanometer.",true);
+
+// ===== CAPACITORS (60 questions) =====
+add("Capacitors","Capacitance is defined as:","Charge stored per unit voltage|Voltage per unit charge|Energy stored|Current times time".split("|"),0,"C = Q/V. Capacitance is charge stored per volt applied.");
+add("Capacitors","The SI unit of capacitance is:","Farad (F)|Coulomb (C)|Volt (V)|Ohm (Ω)".split("|"),0,"1 Farad = 1 Coulomb/Volt = 1 C/V.");
+add("Capacitors","A capacitor stores:","Electric charge and energy|Current|Magnetic field|Resistance".split("|"),0,"Capacitors store charge on plates and energy in the electric field.");
+add("Capacitors","The capacitance of a parallel plate capacitor is:","C = ε₀A/d|C = ε₀d/A|C = A/ε₀d|C = ε₀Ad".split("|"),0,"C = ε₀A/d, where A = plate area, d = separation.",true);
+add("Capacitors","If plate separation is halved, capacitance:","Doubles|Halves|Quadruples|Remains the same".split("|"),0,"C ∝ 1/d. Halving d doubles C.");
+add("Capacitors","If plate area is doubled, capacitance:","Doubles|Halves|Quadruples|Remains the same".split("|"),0,"C ∝ A. Doubling A doubles C.");
+add("Capacitors","A dielectric between capacitor plates:","Increases capacitance|Decreases capacitance|Has no effect|Increases voltage".split("|"),0,"Dielectric increases C by factor κ (dielectric constant): C = κε₀A/d.");
+add("Capacitors","The dielectric constant κ is always:","Greater than or equal to 1|Less than 1|Negative|Zero".split("|"),0,"κ ≥ 1 for all materials. For vacuum, κ = 1.");
+add("Capacitors","The capacitance with dielectric is:","C = κε₀A/d|C = ε₀A/(κd)|C = ε₀κ/Ad|C = Ad/κε₀".split("|"),0,"With dielectric: C = κε₀A/d = κC₀.",true);
+add("Capacitors","Energy stored in a capacitor is:","U = ½CV² = ½QV = Q²/2C|U = CV|U = QV|U = CV²".split("|"),0,"U = ½CV² = ½QV = Q²/(2C). Any of these forms.",true);
+add("Capacitors","The energy stored in a 10 μF capacitor charged to 100 V is:","0.05 J|1 J|0.5 J|100 J".split("|"),0,"U = ½CV² = ½ × 10×10⁻⁶ × 10000 = 0.05 J.",true);
+add("Capacitors","For capacitors in series, the equivalent capacitance is:","1/C_eq = 1/C₁ + 1/C₂ + ...|C_eq = C₁ + C₂ + ...|C_eq = C₁C₂|C_eq = C₁ − C₂".split("|"),0,"Series capacitors: reciprocal sum, like parallel resistors.",true);
+add("Capacitors","For capacitors in parallel:","C_eq = C₁ + C₂ + ...|1/C_eq = 1/C₁ + 1/C₂|C_eq = C₁C₂/(C₁+C₂)|C_eq = C₁ − C₂".split("|"),0,"Parallel capacitors: add directly, like series resistors.",true);
+add("Capacitors","Two 6 μF capacitors in series have equivalent capacitance:","3 μF|12 μF|36 μF|6 μF".split("|"),0,"1/C = 1/6 + 1/6 = 2/6 → C = 3 μF.",true);
+add("Capacitors","Two 6 μF capacitors in parallel have equivalent capacitance:","12 μF|3 μF|36 μF|6 μF".split("|"),0,"C = 6 + 6 = 12 μF.",true);
+add("Capacitors","In a series combination, capacitors have:","Same charge on each|Same voltage across each|Same energy each|Same capacitance".split("|"),0,"In series, the same charge flows onto each capacitor: Q₁ = Q₂ = Q.");
+add("Capacitors","In a parallel combination, capacitors have:","Same voltage across each|Same charge on each|Same capacitance|Same energy".split("|"),0,"In parallel, all capacitors connect to same two nodes: V₁ = V₂ = V.");
+add("Capacitors","During charging of a capacitor through a resistor:","Current decreases exponentially|Current increases exponentially|Current is constant|Voltage decreases".split("|"),0,"I = (V/R)e^(-t/RC). Current starts at V/R and decays exponentially.");
+add("Capacitors","The time constant of an RC circuit is:","τ = RC|τ = R/C|τ = C/R|τ = R + C".split("|"),0,"τ = RC. It's the time for charge to reach 63% of final value.",true);
+add("Capacitors","After time t = RC, a charging capacitor reaches approximately:","63% of final charge|100% of final charge|50% of final charge|37% of final charge".split("|"),0,"Q = Q_final(1 − e⁻¹) ≈ Q_final × 0.63 = 63%.");
+add("Capacitors","A capacitor is fully charged after approximately:","5 time constants|1 time constant|2 time constants|10 time constants".split("|"),0,"After 5τ, Q ≈ 99.3% of final. Considered fully charged.");
+add("Capacitors","During discharging, capacitor voltage:","Decreases exponentially|Increases|Remains constant|Oscillates".split("|"),0,"V = V₀e^(-t/RC). Voltage decays exponentially during discharge.");
+add("Capacitors","The energy density in a capacitor's electric field is:","u = ½ε₀E²|u = ε₀E|u = ε₀E²|u = E²/2ε₀".split("|"),0,"Energy per unit volume: u = ½ε₀E² (in vacuum).",true);
+add("Capacitors","A capacitor blocks:","DC (passes AC)|AC (passes DC)|Both AC and DC|Neither".split("|"),0,"DC can't flow through a capacitor (open circuit). AC can (displacement current).");
+add("Capacitors","The symbol for a capacitor in circuit diagrams is:","Two parallel lines|A zigzag line|A coil|An arrow".split("|"),0,"Capacitor: two parallel lines (plates). Zigzag is resistor, coil is inductor.");
+add("Capacitors","A 4 μF and 6 μF capacitor in series, then in parallel with 2 μF, give:","4.4 μF|12 μF|2.4 μF|10 μF".split("|"),0,"Series: (4×6)/(4+6) = 2.4 μF. Parallel with 2: 2.4 + 2 = 4.4 μF.",true);
+add("Capacitors","Variable capacitors are used in:","Radio tuning circuits|Power supplies|Motors|Heating elements".split("|"),0,"Variable capacitors tune resonant circuits by changing plate overlap area.");
+add("Capacitors","Electrolytic capacitors:","Are polarized and have large capacitance|Are non-polarized|Have very small capacitance|Are used only in DC circuits".split("|"),0,"Electrolytic capacitors are polarized (must connect correct polarity) and have large C.");
+add("Capacitors","Ceramic capacitors are typically used for:","High-frequency applications and small values|High capacitance storage|Power factor correction|DC blocking only".split("|"),0,"Ceramic capacitors are stable at high frequencies, used for small C values.");
+add("Capacitors","The breakdown voltage of a capacitor is:","Maximum voltage before dielectric fails|Operating voltage|Minimum voltage|Voltage when fully charged".split("|"),0,"Beyond breakdown voltage, dielectric conducts (spark), damaging the capacitor.");
+add("Capacitors","If a dielectric with κ = 4 is inserted into a capacitor, capacitance becomes:","4 times original|1/4 of original|Same|16 times".split("|"),0,"C = κC₀. With κ = 4, C increases by factor 4.");
+add("Capacitors","A charged capacitor disconnected from supply has dielectric inserted. The energy:","Decreases|Increases|Remains same|Becomes zero".split("|"),0,"Q constant, C increases → U = Q²/2C decreases. Energy goes into pulling dielectric in.");
+add("Capacitors","A capacitor connected to supply has dielectric inserted. The energy:","Increases|Decreases|Remains same|Becomes zero".split("|"),0,"V constant, C increases → U = ½CV² increases. Battery supplies extra energy.");
+add("Capacitors","The charge on a 5 μF capacitor at 10 V is:","50 μC|0.5 μC|2 μC|500 μC".split("|"),0,"Q = CV = 5×10⁻⁶ × 10 = 50×10⁻⁶ C = 50 μC.",true);
+add("Capacitors","A 100 pF capacitor equals:","10⁻¹⁰ F|10⁻⁶ F|10⁻⁸ F|10⁻¹² F".split("|"),0,"1 pF = 10⁻¹² F. So 100 pF = 100 × 10⁻¹² = 10⁻¹⁰ F.");
+add("Capacitors","In an RC circuit, the dimension of RC is:","Time|Frequency|Current|Voltage".split("|"),0,"[RC] = [Ω][F] = [V/A][C/V] = [C/A] = [C/(C/s)] = [s] = Time.");
+add("Capacitors","The force between capacitor plates is:","F = Q²/(2ε₀A) = ε₀E²A/2|F = QE|F = QV|F = CV²".split("|"),0,"F = Q²/(2ε₀A) or F = ½ε₀E²A. Plates attract each other.",true);
+add("Capacitors","Capacitors are used in:","All: filtering, timing, energy storage, coupling|Only filtering|Only energy storage|Only timing".split("|"),0,"Capacitors have many applications: power filtering, timing circuits, coupling, energy storage.");
+add("Capacitors","A camera flash uses capacitors for:","Rapid energy release|Slow charging|Current limiting|Voltage regulation".split("|"),0,"Flash capacitors store energy slowly, release it very quickly for bright flash.");
+add("Capacitors","The capacitance of a spherical conductor of radius R is:","C = 4πε₀R|C = ε₀R/4π|C = R/4πε₀|C = 4πR/ε₀".split("|"),0,"For an isolated sphere: C = 4πε₀R.",true);
+add("Capacitors","A 2 μF capacitor stores 0.02 J. The voltage is:","~141 V|100 V|50 V|200 V".split("|"),0,"U = ½CV² → V = √(2U/C) = √(0.04/2×10⁻⁶) = √20000 ≈ 141 V.",true);
+add("Capacitors","The equivalent capacitance of series capacitors is always:","Less than the smallest|Greater than the largest|Equal to the sum|Equal to the product".split("|"),0,"Series capacitors: reciprocal sum → equivalent < smallest individual.");
+add("Capacitors","1 μF equals:","10⁻⁶ F|10⁻³ F|10⁻⁹ F|10⁻¹² F".split("|"),0,"μ (micro) = 10⁻⁶. So 1 μF = 10⁻⁶ F.");
+add("Capacitors","Three 3 μF capacitors in series have equivalent capacitance:","1 μF|9 μF|3 μF|27 μF".split("|"),0,"For n equal capacitors in series: C_eq = C/n = 3/3 = 1 μF.",true);
+add("Capacitors","Three 3 μF capacitors in parallel have equivalent capacitance:","9 μF|1 μF|3 μF|27 μF".split("|"),0,"C_eq = C₁ + C₂ + C₃ = 3 + 3 + 3 = 9 μF.",true);
+add("Capacitors","The unit of ε₀ (permittivity) is:","F/m or C²/(N·m²)|F·m|N/C|V·m".split("|"),0,"From C = ε₀A/d, ε₀ = Cd/A has units F/m.");
+add("Capacitors","A 10 μF capacitor charged to 200 V has charge:","2 mC|0.02 C|200 μC|20 C".split("|"),0,"Q = CV = 10×10⁻⁶ × 200 = 2×10⁻³ C = 2 mC.",true);
+add("Capacitors","A parallel plate capacitor has plates of area 0.01 m² separated by 0.001 m. Capacitance is:","88.5 pF|885 pF|8.85 pF|0.885 pF".split("|"),0,"C = ε₀A/d = 8.85×10⁻¹² × 0.01/0.001 = 8.85×10⁻¹¹ F ≈ 88.5 pF.",true);
+add("Capacitors","If capacitor plates are moved further apart, capacitance:","Decreases|Increases|Remains same|Doubles".split("|"),0,"C = ε₀A/d. Increasing d decreases C.");
+add("Capacitors","The electric field in a parallel plate capacitor is:","E = V/d = σ/ε₀|E = Vd|E = V/d²|E = σε₀".split("|"),0,"E = V/d (uniform field). Also E = σ/ε₀ where σ = surface charge density.",true);
+add("Capacitors","Displacement current in a capacitor is:","ε₀(dE/dt)|Real current of electrons|Zero|Infinite".split("|"),0,"Maxwell's displacement current: I_d = ε₀(dΦ_E/dt). Allows continuity in circuits.",true);
+add("Capacitors","A capacitor of 4 μF has plates of area 0.02 m². With ε₀ = 8.85×10⁻¹² F/m, separation is:","~44 μm|4.4 mm|0.44 mm|4.4 m".split("|"),0,"d = ε₀A/C = 8.85×10⁻¹² × 0.02 / 4×10⁻⁶ ≈ 4.4×10⁻⁵ m = 44 μm.",true);
+add("Capacitors","Super capacitors are characterized by:","Very large capacitance (farads)|Very small capacitance|High voltage rating|Low energy density".split("|"),0,"Supercapacitors store much more charge than regular capacitors (1-1000 F).");
+add("Capacitors","Energy stored per unit volume in a capacitor is proportional to:","E² (electric field squared)|E|V|C".split("|"),0,"u = ½ε₀E². Energy density ∝ E².");
+add("Capacitors","A 1 F capacitor charged to 1 V stores energy:","0.5 J|1 J|2 J|0.25 J".split("|"),0,"U = ½CV² = ½ × 1 × 1 = 0.5 J.",true);
+add("Capacitors","What happens if a capacitor is connected with reversed polarity to DC?","Electrolytic capacitors may explode; others are okay|Nothing happens|All capacitors explode|Capacitance increases".split("|"),0,"Electrolytic capacitors are polarized; reversed polarity can cause failure.");
+
+// ===== MAGNETISM (75 questions) =====
+add("Magnetism","The magnetic force on a moving charge is:","F = qvB sin θ|F = qvB cos θ|F = qB/v|F = qv/B".split("|"),0,"F = qv × B. Magnitude: F = qvB sin θ.",true);
+add("Magnetism","A charge moving parallel to a magnetic field experiences:","Zero force|Maximum force|Force perpendicular to both|Force along the field".split("|"),0,"F = qvB sin θ. If θ = 0° (parallel), sin 0 = 0, so F = 0.");
+add("Magnetism","A charge moving perpendicular to B experiences force that is:","Perpendicular to both v and B|Parallel to v|Parallel to B|Zero".split("|"),0,"F = qv × B is perpendicular to both v and B (right-hand rule).");
+add("Magnetism","The SI unit of magnetic field is:","Tesla (T)|Weber (Wb)|Gauss (G)|Ampere (A)".split("|"),0,"Magnetic field B is measured in Tesla. 1 T = 1 Wb/m².");
+add("Magnetism","1 Tesla equals:","1 Wb/m² = 1 kg/(A·s²)|1 V·s|1 A·m|1 N·m".split("|"),0,"T = Wb/m² = N/(A·m) = kg/(A·s²).");
+add("Magnetism","A charge in a magnetic field moves in a circle because:","Force is always perpendicular to velocity|Force is constant|Charge loses energy|Field does work".split("|"),0,"F ⊥ v always, so force changes direction but not speed → circular motion.");
+add("Magnetism","The radius of circular motion of a charge in magnetic field is:","r = mv/(qB)|r = qB/(mv)|r = qvB/m|r = mB/(qv)".split("|"),0,"qvB = mv²/r → r = mv/(qB).",true);
+add("Magnetism","The force on a current-carrying wire in magnetic field is:","F = BIL sin θ|F = BIL cos θ|F = BI/L|F = BL/I".split("|"),0,"F = IL × B. Magnitude: F = BIL sin θ.",true);
+add("Magnetism","Fleming's Left-Hand Rule gives:","Direction of force on current in magnetic field|Direction of induced current|Direction of magnetic field|Direction of electric field".split("|"),0,"Left-hand rule: thumb=Force, index=Field, middle=Current (for motors).");
+add("Magnetism","Fleming's Right-Hand Rule is used for:","Direction of induced current (generators)|Direction of force on current|Direction of magnetic force|Motor operation".split("|"),0,"Right-hand rule: for generators/induced EMF. Thumb=motion, index=field, middle=current.");
+add("Magnetism","A current-carrying loop in a magnetic field experiences:","Torque|Only force|Neither force nor torque|Translational motion only".split("|"),0,"A loop experiences torque τ = NIAB sin θ, causing rotation.");
+add("Magnetism","The torque on a current loop in magnetic field is:","τ = NIAB sin θ|τ = NIB/A|τ = NAB/I|τ = NIA/B".split("|"),0,"τ = NIA × B = NIAB sin θ, where N = turns, A = area.",true);
+add("Magnetism","A DC motor converts:","Electrical energy to mechanical energy|Mechanical to electrical|Chemical to electrical|Heat to mechanical".split("|"),0,"Motors convert electrical energy to mechanical (rotation).");
+add("Magnetism","A generator converts:","Mechanical energy to electrical energy|Electrical to mechanical|Chemical to electrical|Heat to electrical".split("|"),0,"Generators convert mechanical rotation to electrical energy (EMF).");
+add("Magnetism","Faraday's Law of electromagnetic induction states:","Induced EMF = −dΦ/dt|EMF = IR|Force = BIL|B = μ₀I/(2πr)".split("|"),0,"ε = −dΦ_B/dt. EMF equals negative rate of change of magnetic flux.",true);
+add("Magnetism","The negative sign in Faraday's Law indicates:","Lenz's Law (opposition to change)|Error in measurement|Attractive force|Positive EMF".split("|"),0,"The minus sign represents Lenz's law: induced EMF opposes the change in flux.");
+add("Magnetism","Lenz's Law states that induced current:","Opposes the change that produces it|Aids the change|Has no relation to change|Is always zero".split("|"),0,"Lenz's law: induced effects oppose their cause (energy conservation).");
+add("Magnetism","Magnetic flux is defined as:","Φ = BA cos θ|Φ = BA sin θ|Φ = B/A|Φ = A/B".split("|"),0,"Φ = B·A = BA cos θ, where θ is angle between B and area normal.",true);
+add("Magnetism","The SI unit of magnetic flux is:","Weber (Wb)|Tesla (T)|Volt (V)|Henry (H)".split("|"),0,"Φ = BA, so [Φ] = T·m² = Weber (Wb).");
+add("Magnetism","An EMF is induced in a coil when:","Magnetic flux through it changes|A current flows through it|It is connected to a battery|It is made of copper".split("|"),0,"EMF is induced only when dΦ/dt ≠ 0 (changing flux).");
+add("Magnetism","No EMF is induced when:","Flux through the coil is constant|Coil rotates in magnetic field|Magnet moves toward coil|Field strength changes".split("|"),0,"If dΦ/dt = 0 (constant flux), there's no induced EMF.");
+add("Magnetism","An AC generator produces:","Alternating EMF (sinusoidal)|Constant EMF|Pulsating DC|No EMF".split("|"),0,"As coil rotates, flux changes sinusoidally → ε = ε₀ sin ωt.");
+add("Magnetism","In an AC generator, EMF is maximum when:","Coil plane is parallel to field (flux is zero)|Coil is perpendicular to field|Flux is maximum|Coil is stationary".split("|"),0,"ε ∝ dΦ/dt. When Φ = 0 (coil parallel to B), dΦ/dt is maximum.");
+add("Magnetism","The frequency of AC from a generator with p poles rotating at n rpm is:","f = np/120|f = n/60|f = 60/n|f = np".split("|"),0,"f = np/120, where p = number of poles, n = rpm.",true);
+add("Magnetism","A DC generator differs from AC generator by having:","A commutator (split rings)|Slip rings|No coil|Permanent magnets only".split("|"),0,"DC generator uses commutator to convert AC to pulsating DC.");
+add("Magnetism","A transformer works on the principle of:","Mutual induction|Self induction|Ohm's law|Coulomb's law".split("|"),0,"Changing current in primary induces EMF in secondary via mutual induction.");
+add("Magnetism","A transformer works only with:","AC (not DC)|DC (not AC)|Both AC and DC|Neither".split("|"),0,"Transformers need changing flux (dI/dt ≠ 0). DC gives constant I, so no induction.");
+add("Magnetism","The transformer equation is:","V_s/V_p = N_s/N_p = I_p/I_s|V_s/V_p = N_p/N_s|V_s = V_p + N_s|V_p/V_s = I_p/I_s".split("|"),0,"V_s/V_p = N_s/N_p (voltage ratio = turns ratio). Also I_p/I_s = N_s/N_p.",true);
+add("Magnetism","A step-up transformer has:","N_s > N_p (more secondary turns)|N_s < N_p|N_s = N_p|No secondary coil".split("|"),0,"Step-up: N_s > N_p → V_s > V_p (increases voltage).");
+add("Magnetism","A step-down transformer has:","N_s < N_p (fewer secondary turns)|N_s > N_p|N_s = N_p|Equal voltages".split("|"),0,"Step-down: N_s < N_p → V_s < V_p (decreases voltage).");
+add("Magnetism","In an ideal transformer:","V_pI_p = V_sI_s (power conserved)|V_p = V_s|I_p = I_s|Energy is created".split("|"),0,"Power in = Power out for ideal transformer: V_pI_p = V_sI_s.");
+add("Magnetism","A transformer with 100 primary turns and 500 secondary turns with 20 V input gives:","100 V output|4 V output|2500 V output|20 V output".split("|"),0,"V_s/V_p = N_s/N_p → V_s = 20 × 500/100 = 100 V.",true);
+add("Magnetism","Energy losses in transformers include:","All: eddy currents, hysteresis, resistance|Only eddy currents|Only resistance|None (100% efficient)".split("|"),0,"Real transformers lose energy to eddy currents, hysteresis, and copper (I²R) losses.");
+add("Magnetism","Eddy currents are reduced by:","Using laminated core|Using solid core|Increasing current|Adding more turns".split("|"),0,"Laminated (thin insulated sheets) core reduces eddy current paths.");
+add("Magnetism","The magnetic field due to a long straight wire is:","B = μ₀I/(2πr)|B = μ₀I/(4πr)|B = μ₀Ir|B = μ₀I/r²".split("|"),0,"From Ampere's law: B = μ₀I/(2πr) at distance r from wire.",true);
+add("Magnetism","The permeability of free space μ₀ equals:","4π × 10⁻⁷ H/m|8.85 × 10⁻¹² F/m|9 × 10⁹ N·m²/C²|1.6 × 10⁻¹⁹ C".split("|"),0,"μ₀ = 4π × 10⁻⁷ T·m/A (or H/m).");
+add("Magnetism","The direction of magnetic field around a wire is given by:","Right-hand thumb rule|Left-hand rule|Lenz's law|Faraday's law".split("|"),0,"Thumb points in current direction; fingers curl in direction of B.");
+add("Magnetism","Two parallel wires carrying current in same direction:","Attract each other|Repel each other|Have no force|Rotate".split("|"),0,"Same direction currents attract; opposite direction currents repel.");
+add("Magnetism","Two parallel wires carrying current in opposite directions:","Repel each other|Attract each other|Have no force|Oscillate".split("|"),0,"Opposite currents create opposing magnetic effects → repulsion.");
+add("Magnetism","The magnetic field at the center of a circular loop of radius R carrying current I is:","B = μ₀I/(2R)|B = μ₀I/R|B = μ₀IR|B = μ₀I/(4πR)".split("|"),0,"B = μ₀I/(2R) at center of circular loop.",true);
+add("Magnetism","A solenoid is:","A coil of many turns (produces uniform internal field)|A single loop|A permanent magnet|A capacitor".split("|"),0,"Solenoid: cylindrical coil. Internal field is uniform: B = μ₀nI.");
+add("Magnetism","The magnetic field inside a solenoid is:","B = μ₀nI (n = turns per length)|B = μ₀I|B = μ₀N|B = μ₀NI".split("|"),0,"B = μ₀nI where n = N/L (turns per unit length).",true);
+add("Magnetism","Biot-Savart Law gives:","Magnetic field due to current element|Electric field due to charge|Induced EMF|Force on wire".split("|"),0,"dB = (μ₀/4π)(I dl × r̂)/r². Gives B from current element.");
+add("Magnetism","Ampere's Circuital Law states:","∮B·dl = μ₀I_enclosed|∮E·dl = −dΦ/dt|F = qvB|∇ × B = μ₀J".split("|"),0,"Line integral of B around closed path = μ₀ × current enclosed.",true);
+add("Magnetism","The unit of magnetic flux density is:","Tesla|Weber|Henry|Ampere".split("|"),0,"Flux density B is measured in Tesla (T).");
+add("Magnetism","Earth's magnetic field is approximately:","10⁻⁵ to 10⁻⁴ T|1 T|10⁻² T|10⁻¹⁰ T".split("|"),0,"Earth's B ≈ 25-65 μT (about 0.5 Gauss or 5×10⁻⁵ T).");
+add("Magnetism","A magnetic dipole moment is:","m = NIA|m = NI/A|m = NA/I|m = I/NA".split("|"),0,"For a coil: m = NIA (turns × current × area).",true);
+add("Magnetism","The unit of magnetic dipole moment is:","A·m²|T·m|Wb|H".split("|"),0,"m = IA, so units are A·m² (or J/T).");
+add("Magnetism","An electron moving in a circle in a magnetic field has period:","T = 2πm/(qB)|T = qB/(2πm)|T = 2πqB/m|T = m/(2πqB)".split("|"),0,"T = 2πr/v = 2πm/(qB). Period is independent of speed!",true);
+add("Magnetism","A cyclotron uses:","Magnetic field to bend particles, electric field to accelerate|Only magnetic field|Only electric field|Neither".split("|"),0,"Cyclotron: B field keeps particles in spiral; E field accelerates at each semicircle.");
+add("Magnetism","In a mass spectrometer, radius of path depends on:","Mass-to-charge ratio (m/q)|Only mass|Only charge|Only velocity".split("|"),0,"r = mv/(qB). For same v and B, r ∝ m/q.");
+add("Magnetism","The Lorentz force on a moving charge is:","F = q(E + v × B)|F = qE|F = qvB|F = qE + B".split("|"),0,"Total electromagnetic force: F = q(E + v × B).",true);
+add("Magnetism","If a charged particle enters a region with E ⊥ B and passes undeflected, then:","v = E/B|v = B/E|v = EB|v = E + B".split("|"),0,"Undeflected: qE = qvB → v = E/B (velocity selector).",true);
+add("Magnetism","The force per unit length between two parallel wires carrying currents I₁ and I₂ separated by d is:","F/L = μ₀I₁I₂/(2πd)|F/L = μ₀I₁I₂d|F/L = I₁I₂/(μ₀d)|F/L = 2πd/(μ₀I₁I₂)".split("|"),0,"F/L = μ₀I₁I₂/(2πd) per unit length.",true);
+add("Magnetism","The ampere is defined using:","Force between two current-carrying wires|Voltage across a resistor|Charge on an electron|Energy in a capacitor".split("|"),0,"1 Ampere: current that produces 2×10⁻⁷ N/m force between wires 1 m apart.");
+add("Magnetism","Hysteresis in magnetic materials refers to:","Lagging of B behind H (energy loss)|Instant response|No magnetization|Superconductivity".split("|"),0,"Hysteresis: B doesn't return to zero when H is removed. Area of loop = energy loss.");
+add("Magnetism","Soft magnetic materials:","Are easily magnetized/demagnetized|Retain magnetization permanently|Are insulators|Don't respond to fields".split("|"),0,"Soft materials (iron): low coercivity, easy to magnetize/demagnetize. Used in transformers.");
+add("Magnetism","Hard magnetic materials:","Retain magnetization (permanent magnets)|Lose magnetization easily|Are non-magnetic|Are conductors".split("|"),0,"Hard materials (steel, neodymium): high coercivity, used for permanent magnets.");
+add("Magnetism","The back EMF in a motor:","Opposes applied voltage|Adds to applied voltage|Equals zero|Equals applied voltage".split("|"),0,"Back EMF opposes the current (Lenz's law), reducing effective voltage.");
+add("Magnetism","At steady state, motor current I satisfies:","V = ε_back + IR|V = ε_back − IR|I = V/ε_back|V = IR only".split("|"),0,"Applied V = back EMF + IR drop. As motor speeds up, ε_back increases, I decreases.",true);
+add("Magnetism","A galvanometer is:","A sensitive current-detecting device|A voltage source|A resistance|A capacitor".split("|"),0,"Galvanometer detects small currents using torque on coil in magnetic field.");
+add("Magnetism","To convert galvanometer to ammeter, add:","Low resistance in parallel (shunt)|High resistance in series|Capacitor|Inductor".split("|"),0,"Shunt resistor bypasses most current, protecting galvanometer.");
+add("Magnetism","To convert galvanometer to voltmeter, add:","High resistance in series|Low resistance in parallel|Capacitor|Battery".split("|"),0,"Series resistance limits current for high voltage measurement.");
+add("Magnetism","Alternating current (AC) is described by:","I = I₀ sin ωt|I = I₀|I = constant|I = I₀t".split("|"),0,"AC varies sinusoidally: I = I₀ sin ωt, where ω = 2πf.",true);
+add("Magnetism","The frequency of AC mains in Nigeria is:","50 Hz|60 Hz|100 Hz|25 Hz".split("|"),0,"Nigeria uses 50 Hz AC (like most of Europe/Africa). USA uses 60 Hz.");
+add("Magnetism","RMS value of AC current is:","I_rms = I₀/√2|I_rms = I₀|I_rms = I₀√2|I_rms = I₀/2".split("|"),0,"I_rms = I₀/√2 ≈ 0.707 I₀. Gives same heating as equivalent DC.",true);
+add("Magnetism","The average value of AC over a complete cycle is:","Zero|Maximum|I₀/√2|I₀/2".split("|"),0,"AC is symmetric; positive and negative halves cancel. Average = 0.");
+add("Magnetism","The phase difference between voltage and current in a pure inductor is:","90° (current lags voltage)|0°|180°|45°".split("|"),0,"In inductor: V = L(dI/dt). Current lags voltage by 90°.");
+add("Magnetism","The phase difference between voltage and current in a pure capacitor is:","90° (current leads voltage)|0°|180°|45°".split("|"),0,"In capacitor: I = C(dV/dt). Current leads voltage by 90°.");
+add("Magnetism","The phase difference between voltage and current in a pure resistor is:","0° (in phase)|90°|180°|45°".split("|"),0,"In resistor: V = IR. Voltage and current are in phase.");
+add("Magnetism","Transformer efficiency is:","η = (output power/input power) × 100%|η = V_s/V_p|η = N_s/N_p|η = I_s/I_p".split("|"),0,"η = P_out/P_in × 100%. Good transformers achieve >95% efficiency.",true);
+add("Magnetism","The symbol for an inductor in circuit diagrams is:","A coil|Two parallel lines|A zigzag|A triangle".split("|"),0,"Inductor: coiled line (spring-like). Capacitor: parallel lines. Resistor: zigzag.");
+
+// ===== INDUCTANCE (35 questions) =====
+add("Inductance","Self-inductance is:","Inducing EMF in same coil due to changing current|Inducing EMF in different coil|Resistance of coil|Capacitance of coil".split("|"),0,"Self-inductance: changing I in a coil induces EMF in itself.");
+add("Inductance","The self-induced EMF is:","ε = −L(dI/dt)|ε = LI|ε = L/I|ε = −LI".split("|"),0,"ε = −L(dI/dt). EMF opposes change in current.",true);
+add("Inductance","The SI unit of inductance is:","Henry (H)|Farad (F)|Ohm (Ω)|Weber (Wb)".split("|"),0,"1 Henry = 1 V·s/A = 1 Wb/A.");
+add("Inductance","One Henry equals:","1 V·s/A = 1 Wb/A|1 V/A|1 A/V|1 F/m".split("|"),0,"L = ε/(dI/dt) → [L] = V·s/A = H. Also L = Φ/I → H = Wb/A.");
+add("Inductance","The inductance of a solenoid is:","L = μ₀n²Al = μ₀N²A/l|L = μ₀nA|L = μ₀N/l|L = μ₀Al".split("|"),0,"L = μ₀n²V = μ₀N²A/l, where n = N/l, A = area, l = length.",true);
+add("Inductance","If the number of turns in a coil doubles, inductance:","Quadruples|Doubles|Halves|Remains the same".split("|"),0,"L ∝ N². Doubling N gives 4L.");
+add("Inductance","Mutual inductance is:","Inducing EMF in one coil due to changing current in another|Self-inductance|Capacitance between coils|Resistance between coils".split("|"),0,"Mutual inductance M: changing current in coil 1 induces EMF in coil 2.");
+add("Inductance","The mutually induced EMF is:","ε₂ = −M(dI₁/dt)|ε₂ = MI₁|ε₂ = M/I₁|ε₂ = LI".split("|"),0,"ε₂ = −M(dI₁/dt). M is mutual inductance.",true);
+add("Inductance","Mutual inductance depends on:","Geometry and relative position of coils|Current in coils|Voltage across coils|Only one coil's properties".split("|"),0,"M depends on coil shapes, sizes, separation, orientation, and medium.");
+add("Inductance","The coupling coefficient k between two coils is:","k = M/√(L₁L₂), where 0 ≤ k ≤ 1|k = L₁L₂/M|k = M(L₁ + L₂)|k > 1 always".split("|"),0,"k = M/√(L₁L₂). k = 1 for perfect coupling, k = 0 for no coupling.",true);
+add("Inductance","For perfect coupling between coils:","M = √(L₁L₂)|M = L₁ + L₂|M = L₁L₂|M = 0".split("|"),0,"When k = 1: M = √(L₁L₂) (maximum possible mutual inductance).");
+add("Inductance","Energy stored in an inductor is:","U = ½LI²|U = LI|U = LI²|U = ½L/I²".split("|"),0,"U = ½LI². Energy is stored in the magnetic field.",true);
+add("Inductance","An inductor with L = 2 H carrying 3 A stores energy:","9 J|6 J|3 J|18 J".split("|"),0,"U = ½LI² = ½ × 2 × 9 = 9 J.",true);
+add("Inductance","An inductor opposes:","Changes in current|Changes in voltage|Constant current|DC current only".split("|"),0,"Inductors oppose dI/dt. They resist changes in current, not steady current.");
+add("Inductance","In DC steady state, an ideal inductor acts like:","A short circuit (R = 0)|An open circuit|A capacitor|A resistor".split("|"),0,"At DC steady state, dI/dt = 0, so ε = 0. Ideal inductor has zero resistance.");
+add("Inductance","The time constant of an RL circuit is:","τ = L/R|τ = LR|τ = R/L|τ = √(LR)".split("|"),0,"τ = L/R. After time τ, current reaches 63% of final value.",true);
+add("Inductance","In an LR circuit, current grows as:","I = I₀(1 − e^(−t/τ))|I = I₀e^(−t/τ)|I = I₀t|I = constant".split("|"),0,"Current rises exponentially: I = (V/R)(1 − e^(−Rt/L)).",true);
+add("Inductance","When an RL circuit is switched off, current:","Decays exponentially|Increases|Stays constant|Becomes infinite".split("|"),0,"I = I₀e^(−t/τ). Current decays exponentially through any discharge path.");
+add("Inductance","At t = 0, when voltage is applied to an RL circuit:","Current is zero|Current is maximum|Current is V/R|Voltage is zero".split("|"),0,"Inductor initially opposes current change. At t=0, I = 0.");
+add("Inductance","An inductor stores energy in its:","Magnetic field|Electric field|Dielectric|Resistance".split("|"),0,"Inductor energy is in the magnetic field: u = B²/(2μ₀).");
+add("Inductance","Energy density in a magnetic field is:","u = B²/(2μ₀)|u = μ₀B²/2|u = B/μ₀|u = μ₀/B²".split("|"),0,"u = B²/(2μ₀) per unit volume.",true);
+add("Inductance","A coil has L = 10 mH. If current changes from 0 to 2 A in 0.01 s, induced EMF is:","2 V|0.2 V|20 V|0.02 V".split("|"),0,"ε = L(dI/dt) = 0.01 × (2/0.01) = 2 V.",true);
+add("Inductance","The phase angle in an RL circuit is:","φ = tan⁻¹(ωL/R)|φ = tan⁻¹(R/ωL)|φ = ωL/R|φ = 90° always".split("|"),0,"φ = tan⁻¹(X_L/R) = tan⁻¹(ωL/R). Current lags voltage.",true);
+add("Inductance","Inductive reactance is:","X_L = ωL = 2πfL|X_L = 1/ωL|X_L = L/ω|X_L = ωC".split("|"),0,"X_L = ωL. Reactance increases with frequency.",true);
+add("Inductance","The unit of reactance is:","Ohm (Ω)|Henry (H)|Farad (F)|Watt (W)".split("|"),0,"Reactance has same unit as resistance: Ohm (Ω).");
+add("Inductance","At high frequencies, an inductor acts more like:","An open circuit|A short circuit|A capacitor|A resistor".split("|"),0,"X_L = ωL. High ω → high X_L → blocks high-frequency signals.");
+add("Inductance","Applications of inductors include:","All: chokes, filters, transformers, motors|Only filters|Only transformers|Only motors".split("|"),0,"Inductors are used in chokes, filters, transformers, motors, tuning circuits.");
+add("Inductance","The dimension of inductance is:","[ML²T⁻²A⁻²]|[ML²T⁻³A⁻²]|[MT⁻²A⁻²]|[ML²T⁻²A⁻¹]".split("|"),0,"L = Φ/I = Wb/A. [L] = [ML²T⁻²A⁻¹]/[A] = [ML²T⁻²A⁻²].");
+add("Inductance","Inductor in series add as:","L_eq = L₁ + L₂ (no mutual inductance)|1/L_eq = 1/L₁ + 1/L₂|L_eq = L₁L₂/(L₁+L₂)|L_eq = L₁ − L₂".split("|"),0,"Without mutual inductance, series inductors add: L_eq = L₁ + L₂.",true);
+add("Inductance","Inductors in parallel (no mutual inductance):","1/L_eq = 1/L₁ + 1/L₂|L_eq = L₁ + L₂|L_eq = L₁L₂|L_eq = L₁ − L₂".split("|"),0,"Parallel inductors: reciprocal sum, like series capacitors.",true);
+add("Inductance","A choke is used in AC circuits to:","Limit current without much power loss|Increase current|Store charge|Generate EMF".split("|"),0,"Choke (inductor): limits AC current via reactance, with minimal I²R loss.");
+add("Inductance","The quality factor Q of an inductor is:","Q = ωL/R|Q = R/ωL|Q = ωLR|Q = L/R".split("|"),0,"Q = X_L/R = ωL/R. Higher Q means lower losses.",true);
+add("Inductance","A 5 H inductor carrying 4 A has magnetic flux:","20 Wb (total)|1.25 Wb|0.8 Wb|80 Wb".split("|"),0,"L = NΦ/I → total flux linkage = LI = 5 × 4 = 20 Wb·turns.",true);
+add("Inductance","Inductance of a coil increases with:","More turns, larger area, magnetic core|Fewer turns|Smaller area|Air core".split("|"),0,"L ∝ N²A. Also, magnetic (iron) core increases L by factor μ_r.");
+add("Inductance","The coefficient of coupling k = 1 means:","All flux from one coil links the other|No flux linkage|Some flux leakage|Coils are far apart".split("|"),0,"k = 1: perfect coupling, no leakage flux. All flux is mutual.");
+
+return Q;
+}
+
+const questionBank = generateQuestionBank();
+console.log(`Question bank loaded: ${questionBank.length} questions`);
+
+// ========== STATE ==========
+let state = {
+exam: null,
+history: [],
+topicStats: {},
+usedIds: [],
+missedQuestions: {},
+currentScreen: 'screen-home',
+timerInterval: null,
+startTime: null,
+theme: 'light'
+};
+
+// ========== LOCAL STORAGE ==========
+function loadState(){
+try{
+const s = localStorage.getItem('physicsCBT_v2');
+if(s){
+const p = JSON.parse(s);
+state.history = p.history || [];
+state.topicStats = p.topicStats || {};
+state.usedIds = p.usedIds || [];
+state.missedQuestions = p.missedQuestions || {};
+state.theme = p.theme || 'light';
+}
+}catch(e){}
+applyTheme();
+}
+
+function saveState(){
+try{
+localStorage.setItem('physicsCBT_v2', JSON.stringify({
+history: state.history,
+topicStats: state.topicStats,
+usedIds: state.usedIds,
+missedQuestions: state.missedQuestions,
+theme: state.theme
+}));
+}catch(e){}
+}
+
+// ========== THEME ==========
+function applyTheme(){
+document.documentElement.setAttribute('data-theme', state.theme);
+}
+function toggleTheme(){
+state.theme = state.theme === 'dark' ? 'light' : 'dark';
+applyTheme();
+saveState();
+}
+
+// ========== SCREENS ==========
+function showScreen(id){
+document.querySelectorAll('#app > div:not(.modal)').forEach(el => el.classList.add('hidden'));
+document.getElementById(id).classList.remove('hidden');
+state.currentScreen = id;
+window.scrollTo(0,0);
+}
+function goHome(){
+showScreen('screen-home');
+refreshHome();
+}
+
+// ========== QUESTION SELECTION ==========
+function shuffle(arr){
+const a = [...arr];
+for(let i=a.length-1;i>0;i--){
+const j = Math.floor(Math.random()*(i+1));
+[a[i],a[j]] = [a[j],a[i]];
+}
+return a;
+}
+
+function selectQuestions(mode){
+let pool = [...questionBank];
+
+if(mode === 'weak'){
+const weakTopics = getWeakTopics();
+if(weakTopics.length === 0){
+alert('No weak topics identified yet. Take an exam first!');
+return null;
+}
+pool = pool.filter(q => weakTopics.includes(q.topic));
+if(pool.length < 20){
+const others = questionBank.filter(q => !weakTopics.includes(q.topic));
+pool = pool.concat(shuffle(others).slice(0, 20 - pool.length));
+}
+}
+
+if(mode === 'spaced'){
+// Prioritize questions that have been missed
+const missed = pool.filter(q => state.missedQuestions[q.id] > 0);
+const notMissed = pool.filter(q => !state.missedQuestions[q.id]);
+// Weight missed questions higher
+let weighted = [];
+missed.forEach(q => {
+const count = Math.min(state.missedQuestions[q.id], 3);
+for(let i = 0; i < count; i++) weighted.push(q);
+});
+weighted = weighted.concat(notMissed);
+pool = weighted;
+}
+
+// Prioritize unused questions
+const unused = pool.filter(q => !state.usedIds.includes(q.id));
+const used = pool.filter(q => state.usedIds.includes(q.id));
+
+let selected;
+if(unused.length >= 20){
+selected = shuffle(unused).slice(0, 20);
+} else {
+if(unused.length < 5){
+state.usedIds = [];
+selected = shuffle(pool).slice(0, 20);
+} else {
+selected = [...shuffle(unused), ...shuffle(used)].slice(0, 20);
+}
+}
+
+// Mark as used
+selected.forEach(q => {
+if(!state.usedIds.includes(q.id)) state.usedIds.push(q.id);
+});
+
+// Shuffle and randomize options
+selected = shuffle(selected);
+return selected.map(q => {
+const indices = shuffle([0,1,2,3]);
+const newOpts = indices.map(i => q.options[i]);
+const newCorrect = indices.indexOf(q.correctIdx);
+return {
+...q,
+options: newOpts,
+correctIdx: newCorrect,
+userAnswer: -1,
+flagged: false,
+skipped: false
+};
+});
+}
+
+function getWeakTopics(){
+const weak = [];
+for(const topic of TOPICS){
+const s = state.topicStats[topic];
+if(s && s.total >= 3){
+const pct = (s.correct / s.total) * 100;
+if(pct < 70) weak.push(topic);
+}
+}
+return weak;
+}
+
+// ========== EXAM ==========
+function startExam(mode){
+const questions = selectQuestions(mode);
+if(!questions) return;
+
+state.exam = {
+mode,
+questions,
+current: 0,
+submitted: false
+};
+state.startTime = Date.now();
+clearInterval(state.timerInterval);
+state.timerInterval = setInterval(updateTimer, 1000);
+
+showScreen('screen-exam');
+renderQuestion();
+renderQNav();
+saveState();
+}
+
+function updateTimer(){
+if(!state.startTime) return;
+const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+const m = String(Math.floor(elapsed / 60)).padStart(2, '0');
+const s = String(elapsed % 60).padStart(2, '0');
+document.getElementById('timer').textContent = m + ':' + s;
+}
+
+function renderQuestion(){
+const e = state.exam;
+if(!e) return;
+const q = e.questions[e.current];
+const i = e.current;
+const total = e.questions.length;
+
+document.getElementById('q-num').textContent = `Question ${i+1} of ${total}`;
+document.getElementById('progress').style.width = ((i+1)/total*100) + '%';
+document.getElementById('q-topic').textContent = q.topic;
+document.getElementById('q-text').textContent = q.question;
+
+const labels = ['A','B','C','D'];
+let html = '';
+q.options.forEach((opt, idx) => {
+const sel = q.userAnswer === idx ? ' selected' : '';
+html += `<div class="option${sel}" onclick="selectOption(${idx})">
+<span class="option-label">${labels[idx]}</span>
+<span>${opt}</span></div>`;
+});
+document.getElementById('q-options').innerHTML = html;
+
+document.getElementById('btn-prev').disabled = i === 0;
+document.getElementById('btn-next').classList.toggle('hidden', i === total - 1);
+document.getElementById('btn-submit').classList.toggle('hidden', i !== total - 1);
+document.getElementById('flag-btn').classList.toggle('active', q.flagged);
+
+updateQNav();
+}
+
+function selectOption(idx){
+if(state.exam.submitted) return;
+const q = state.exam.questions[state.exam.current];
+q.userAnswer = idx;
+q.skipped = false;
+renderQuestion();
+}
+
+function navQ(dir){
+const e = state.exam;
+const newIdx = e.current + dir;
+if(newIdx < 0 || newIdx >= e.questions.length) return;
+e.current = newIdx;
+renderQuestion();
+}
+
+function jumpToQ(idx){
+state.exam.current = idx;
+renderQuestion();
+}
+
+function toggleFlag(){
+const q = state.exam.questions[state.exam.current];
+q.flagged = !q.flagged;
+document.getElementById('flag-btn').classList.toggle('active', q.flagged);
+updateQNav();
+}
+
+function skipQuestion(){
+const q = state.exam.questions[state.exam.current];
+q.skipped = true;
+q.userAnswer = -1;
+if(state.exam.current < state.exam.questions.length - 1){
+navQ(1);
+}
+renderQuestion();
+}
+
+function renderQNav(){
+const e = state.exam;
+let html = '';
+e.questions.forEach((q, i) => {
+html += `<div class="q-dot" id="qdot-${i}" onclick="jumpToQ(${i})">${i+1}</div>`;
+});
+document.getElementById('q-nav').innerHTML = html;
+updateQNav();
+}
+
+function updateQNav(){
+const e = state.exam;
+e.questions.forEach((q, i) => {
+const dot = document.getElementById('qdot-' + i);
+if(!dot) return;
+dot.className = 'q-dot';
+if(q.userAnswer >= 0) dot.classList.add('answered');
+if(q.skipped) dot.classList.add('skipped');
+if(q.flagged) dot.classList.add('flagged');
+if(i === e.current) dot.classList.add('current');
+});
+}
+
+// ========== SUBMIT ==========
+function confirmSubmit(){
+const answered = state.exam.questions.filter(q => q.userAnswer >= 0).length;
+const total = state.exam.questions.length;
+const skipped = state.exam.questions.filter(q => q.skipped || q.userAnswer === -1).length;
+document.getElementById('modal-msg').textContent = `You have answered ${answered} of ${total} questions.${skipped > 0 ? ` ${skipped} will be marked as skipped.` : ''}`;
+document.getElementById('modal-confirm').classList.add('show');
+}
+
+function hideModal(){
+document.getElementById('modal-confirm').classList.remove('show');
+}
+
+function submitExam(){
+hideModal();
+clearInterval(state.timerInterval);
+const e = state.exam;
+e.submitted = true;
+
+const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+const timeStr = String(Math.floor(elapsed/60)).padStart(2,'0') + ':' + String(elapsed%60).padStart(2,'0');
+
+let correct = 0, wrong = 0, skipped = 0;
+const topicResults = {};
+
+e.questions.forEach(q => {
+if(!topicResults[q.topic]) topicResults[q.topic] = {correct:0, total:0};
+topicResults[q.topic].total++;
+
+if(q.userAnswer === -1){
+skipped++;
+// Track missed
+state.missedQuestions[q.id] = (state.missedQuestions[q.id] || 0) + 1;
+} else if(q.userAnswer === q.correctIdx){
+correct++;
+topicResults[q.topic].correct++;
+// Reduce miss count on correct answer
+if(state.missedQuestions[q.id]) state.missedQuestions[q.id] = Math.max(0, state.missedQuestions[q.id] - 1);
+} else {
+wrong++;
+// Track missed
+state.missedQuestions[q.id] = (state.missedQuestions[q.id] || 0) + 1;
+}
+
+// Update global topic stats
+if(!state.topicStats[q.topic]) state.topicStats[q.topic] = {correct:0, total:0};
+state.topicStats[q.topic].total++;
+if(q.userAnswer === q.correctIdx) state.topicStats[q.topic].correct++;
+});
+
+const score = correct;
+const total = e.questions.length;
+const pct = Math.round((score/total)*100);
+
+let grade, gradeClass;
+if(pct >= 80) { grade = 'Excellent'; gradeClass = 'grade-a'; }
+else if(pct >= 65) { grade = 'Very Good'; gradeClass = 'grade-b'; }
+else if(pct >= 50) { grade = 'Average'; gradeClass = 'grade-c'; }
+else { grade = 'Needs Improvement'; gradeClass = 'grade-f'; }
+
+// Save to history
+state.history.unshift({
+date: new Date().toLocaleString(),
+score, total, pct, grade, time: timeStr, mode: e.mode
+});
+if(state.history.length > 100) state.history.pop();
+saveState();
+
+// Render results
+document.getElementById('res-score').textContent = score + '/' + total;
+document.getElementById('res-pct').textContent = pct + '%';
+const gradeEl = document.getElementById('res-grade');
+gradeEl.textContent = grade;
+gradeEl.className = 'grade ' + gradeClass;
+
+// Encouraging message
+const messages = [
+"Great effort! Keep pushing!",
+"You're making progress!",
+"Every exam makes you stronger!",
+"Focus on your weak areas!",
+"Practice makes perfect!",
+"You've got this!",
+"Keep up the good work!",
+"Learning is a journey!",
+"Consistency is key!",
+"Believe in yourself!"
+];
+const goodMessages = [
+"Outstanding performance! 🎉",
+"You're on fire! 🔥",
+"Excellent work! Keep it up!",
+"You really know your stuff!",
+"Impressive! You're ready!"
+];
+const msgArr = pct >= 75 ? goodMessages : messages;
+document.getElementById('res-msg').textContent = msgArr[Math.floor(Math.random() * msgArr.length)];
+
+document.getElementById('res-correct').textContent = correct;
+document.getElementById('res-wrong').textContent = wrong;
+document.getElementById('res-skipped').textContent = skipped;
+document.getElementById('res-time').textContent = timeStr;
+
+// Topic breakdown
+let topicHTML = '';
+for(const topic of TOPICS){
+if(!topicResults[topic]) continue;
+const tr = topicResults[topic];
+const tpct = tr.total > 0 ? Math.round((tr.correct/tr.total)*100) : 0;
+const cls = tpct >= 70 ? 'strong' : tpct >= 50 ? 'medium' : 'weak';
+topicHTML += `<div class="topic-row">
+<span class="topic-name">${topic}</span>
+<div class="topic-bar"><div class="topic-fill ${cls}" style="width:${tpct}%"></div></div>
+<span class="topic-pct">${tpct}%</span>
+</div>`;
+}
+document.getElementById('res-topics').innerHTML = topicHTML || '<p class="text-muted">No topic data.</p>';
+
+showScreen('screen-result');
+}
+
+// ========== REVIEW ==========
+function renderReview(){
+const e = state.exam;
+if(!e) return;
+const labels = ['A','B','C','D'];
+const correct = e.questions.filter(q => q.userAnswer === q.correctIdx).length;
+let html = `<p class="text-muted mb-4">Score: ${correct}/${e.questions.length}</p>`;
+
+e.questions.forEach((q, i) => {
+const isCorrect = q.userAnswer === q.correctIdx;
+const isSkipped = q.userAnswer === -1;
+const badge = isCorrect ? '<span class="badge badge-success">✓ Correct</span>' :
+isSkipped ? '<span class="badge badge-warning">Skipped</span>' :
+'<span class="badge badge-danger">✗ Wrong</span>';
+
+let optHTML = '';
+q.options.forEach((opt, idx) => {
+let cls = '';
+if(idx === q.correctIdx) cls = ' correct';
+else if(idx === q.userAnswer && !isCorrect) cls = ' wrong';
+optHTML += `<div class="option${cls}" style="cursor:default;padding:12px">
+<span class="option-label">${labels[idx]}</span>
+<span>${opt}</span></div>`;
+});
+
+let explHTML = `<div class="explanation${q.hasFormula ? ' formula' : ''}">
+<h4>Explanation</h4>
+<p>${q.explanation}</p>
+</div>`;
+
+if(!isCorrect && !isSkipped){
+explHTML += `<div class="wrong-exp">
+<strong>Your answer (${labels[q.userAnswer]}):</strong> "${q.options[q.userAnswer]}"<br>
+This is incorrect. The correct answer is <strong>${labels[q.correctIdx]}: ${q.options[q.correctIdx]}</strong>
+</div>`;
+}
+
+html += `<div class="card review-q">
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+<strong>Q${i+1}</strong>
+${badge}
+<span class="badge badge-topic">${q.topic}</span>
+</div>
+<div class="q-text" style="font-size:1rem">${q.question}</div>
+<div class="options" style="gap:8px">${optHTML}</div>
+${explHTML}
+</div>`;
+});
+
+document.getElementById('review-list').innerHTML = html;
+}
+
+// ========== HOME ==========
+function refreshHome(){
+renderHomeTopics();
+renderHomeRecent();
+}
+
+function renderHomeTopics(){
+const stats = state.topicStats;
+let html = '';
+if(Object.keys(stats).length === 0){
+html = '<p class="text-muted">Complete an exam to see your performance.</p>';
+} else {
+for(const topic of TOPICS){
+const s = stats[topic];
+if(!s || s.total === 0) continue;
+const pct = Math.round((s.correct/s.total)*100);
+const cls = pct >= 70 ? 'strong' : pct >= 50 ? 'medium' : 'weak';
+html += `<div class="topic-row">
+<span class="topic-name">${topic}</span>
+<div class="topic-bar"><div class="topic-fill ${cls}" style="width:${pct}%"></div></div>
+<span class="topic-pct">${pct}%</span>
+</div>`;
+}
+if(!html) html = '<p class="text-muted">No topic data yet.</p>';
+}
+document.getElementById('home-topics').innerHTML = html;
+}
+
+function renderHomeRecent(){
+const h = state.history.slice(0, 5);
+if(h.length === 0){
+document.getElementById('home-recent').innerHTML = '<p class="text-muted">No exams taken yet.</p>';
+return;
+}
+let html = '';
+h.forEach(item => {
+const badge = item.pct >= 70 ? 'badge-success' : item.pct >= 50 ? 'badge-warning' : 'badge-danger';
+html += `<div class="history-item">
+<div><strong>${item.score}/${item.total}</strong> (${item.pct}%)<br><small class="text-muted">${item.date}</small></div>
+<span class="badge ${badge}">${item.grade}</span>
+</div>`;
+});
+document.getElementById('home-recent').innerHTML = html;
+}
+
+// ========== STATS ==========
+function switchTab(btn, tabId){
+document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+btn.classList.add('active');
+document.querySelectorAll('#screen-stats .card').forEach(c => c.classList.add('hidden'));
+document.getElementById(tabId).classList.remove('hidden');
+
+if(tabId === 'stats-overview') renderStatsOverview();
+if(tabId === 'stats-topics') renderStatsTopics();
+if(tabId === 'stats-history') renderStatsHistory();
+}
+
+function renderStatsOverview(){
+const h = state.history;
+document.getElementById('stat-total').textContent = h.length;
+
+const avg = h.length > 0 ? Math.round(h.reduce((a, b) => a + b.pct, 0) / h.length) : 0;
+document.getElementById('stat-avg').textContent = avg + '%';
+
+let totalQs = 0;
+for(const t of TOPICS){
+if(state.topicStats[t]) totalQs += state.topicStats[t].total;
+}
+document.getElementById('stat-qs').textContent = totalQs;
+
+let streak = 0, maxStreak = 0;
+for(const exam of h){
+if(exam.pct >= 70){ streak++; maxStreak = Math.max(maxStreak, streak); }
+else { streak = 0; }
+}
+document.getElementById('stat-streak').textContent = maxStreak;
+
+// Weak topics
+const weak = getWeakTopics();
+let weakHTML = weak.length > 0 ?
+`<h4 style="margin-bottom:8px">⚠️ Weak Areas (< 70%)</h4><p class="text-muted">${weak.join(', ')}</p>` :
+(Object.keys(state.topicStats).length > 0 ? '<p class="text-muted">✅ No weak areas identified!</p>' : '');
+document.getElementById('stats-weak-topics').innerHTML = weakHTML;
+}
+
+function renderStatsTopics(){
+let html = '';
+for(const topic of TOPICS){
+const s = state.topicStats[topic];
+const pct = s && s.total > 0 ? Math.round((s.correct/s.total)*100) : 0;
+const cls = pct >= 70 ? 'strong' : pct >= 50 ? 'medium' : 'weak';
+html += `<div class="topic-row">
+<span class="topic-name">${topic}</span>
+<div class="topic-bar"><div class="topic-fill ${cls}" style="width:${pct}%"></div></div>
+<span class="topic-pct">${s ? s.correct + '/' + s.total : '0/0'} (${pct}%)</span>
+</div>`;
+}
+document.getElementById('stats-topic-list').innerHTML = html || '<p class="text-muted">No data yet.</p>';
+}
+
+function renderStatsHistory(){
+const h = state.history;
+if(h.length === 0){
+document.getElementById('stats-history-list').innerHTML = '<p class="text-muted">No exams taken yet.</p>';
+return;
+}
+let html = '';
+h.forEach(item => {
+const badge = item.pct >= 70 ? 'badge-success' : item.pct >= 50 ? 'badge-warning' : 'badge-danger';
+const mode = item.mode === 'weak' ? '🔬' : item.mode === 'spaced' ? '🧠' : '🎯';
+html += `<div class="history-item">
+<div>${mode} <strong>${item.score}/${item.total}</strong> (${item.pct}%)<br><small class="text-muted">${item.date} • ${item.time}</small></div>
+<span class="badge ${badge}">${item.grade}</span>
+</div>`;
+});
+document.getElementById('stats-history-list').innerHTML = html;
+}
+
+function clearAllData(){
+if(!confirm('This will delete all your exam history, statistics, and progress. Are you sure?')) return;
+state.history = [];
+state.topicStats = {};
+state.usedIds = [];
+state.missedQuestions = {};
+saveState();
+refreshHome();
+renderStatsOverview();
+renderStatsTopics();
+renderStatsHistory();
+alert('All data cleared.');
+}
+
+// ========== KEYBOARD SHORTCUTS ==========
+document.addEventListener('keydown', e => {
+if(state.currentScreen !== 'screen-exam' || state.exam?.submitted) return;
+const key = e.key.toLowerCase();
+
+if(key === 'arrowright' || key === 'n'){
+if(state.exam.current < state.exam.questions.length - 1) navQ(1);
+} else if(key === 'arrowleft' || key === 'p'){
+navQ(-1);
+} else if(key === 'a' || key === '1'){
+selectOption(0);
+} else if(key === 'b' || key === '2'){
+selectOption(1);
+} else if(key === 'c' || key === '3'){
+selectOption(2);
+} else if(key === 'd' || key === '4'){
+selectOption(3);
+} else if(key === 'f'){
+toggleFlag();
+} else if(key === 's'){
+skipQuestion();
+} else if(key === 'enter' && state.exam.current === state.exam.questions.length - 1){
+confirmSubmit();
+}
+});
+
+// ========== OVERRIDE SHOW SCREEN ==========
+const origShow = showScreen;
+showScreen = function(id){
+origShow(id);
+if(id === 'screen-review') renderReview();
+if(id === 'screen-stats'){
+document.querySelector('.tab.active')?.click();
+renderStatsOverview();
+}
+};
+
+// ========== INIT ==========
+loadState();
+refreshHome();
+</script>
+</body>
+</html>
